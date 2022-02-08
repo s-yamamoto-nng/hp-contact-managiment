@@ -7,10 +7,10 @@ import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom'
 import { refreshToken } from 'modules/authSlice'
 import AuthPage from './AuthPage'
 import Layout from './Layout'
-import HomePage from './HomePage'
-import RecordPage from './RecordPage'
-import StaffPage from './StaffPage'
-import ChairPage from './ChairPage'
+// import HomePage from './HomePage'
+import Project from './Project'
+import Inquiry from './Inquiry'
+import Task from './Task'
 
 const App = () => {
   const token = useSelector(state => state.auth.token)
@@ -57,10 +57,10 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path="home" element={<HomePage />} />
-          <Route path="record" element={<RecordPage />} />
-          <Route path="staff" element={<StaffPage />} />
-          <Route path="chair" element={<ChairPage />} />
+          {/* <Route path="home" element={<HomePage />} /> */}
+          <Route path="project" element={<Project />} />
+          <Route path="inquiry" element={<Inquiry />} />
+          <Route path="task" element={<Task />} />
         </Route>
         <Route
           path="*"
