@@ -166,6 +166,6 @@ const schema = new Schema(
   }
 )
 
-schema.index({ account: 1 })
+schema.index({ account: 1, memory: 1, staff: 1 })
 
 module.exports = mongoose.model('Record', schema)

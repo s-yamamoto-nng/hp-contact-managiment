@@ -30,6 +30,18 @@ const options2 = [
   { name: 'foot', value: 'foot' },
 ]
 
+const options3 = [
+  { name: 'on', value: 'on' },
+  { name: 'off', value: 'off' },
+  { name: 'foot', value: 'foot' },
+  { name: 'blow', value: 'blow' },
+]
+
+const options4 = [
+  { name: 'high', value: 'high' },
+  { name: 'low', value: 'low' },
+]
+
 export default function RecordPage() {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
@@ -191,10 +203,10 @@ export default function RecordPage() {
 
         {show && (
           <Paper style={{ marginTop: 12, marginBottom: 12, padding: 12 }}>
-            <Typography color="primary" style={{ margin: 6 }}>
-              基本情報
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【基本情報】
             </Typography>
-            <div style={{ display: 'flex', marginTop: 4 }}>
+            <div style={{ display: 'flex' }}>
               <InputField title={'歯科医師名1'} register={register('name_d1')} />
               <InputField title={'歯科医師名2'} register={register('name_d2')} />
               <InputField title={'歯科衛生士名1'} register={register('name_h1')} />
@@ -205,11 +217,11 @@ export default function RecordPage() {
               <InputField title={'歯科助手名2'} register={register('name_a2')} />
             </div>
 
-            <Typography color="primary" style={{ margin: 6 }}>
-              イス
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【イス】
             </Typography>
 
-            <div style={{ display: 'flex', marginTop: 4 }}>
+            <div style={{ display: 'flex' }}>
               <InputField title={'A1での椅子の高さ'} register={register('chair_height_a1')} />
               <InputField title={'A1での椅子の角度'} register={register('chair_angle_a1')} />
               <InputField title={'A1での椅子のチルト'} register={register('chair_tilt_a1')} />
@@ -227,21 +239,125 @@ export default function RecordPage() {
               <InputField title={'M2での椅子のチルト'} register={register('chair_tilt_m2')} />
             </div>
 
-            <Typography color="primary" style={{ margin: 6 }}>
-              タービン ※Xは1-3
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【タービン】
             </Typography>
 
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'ライトの設定'} options={options1} register={register('turbine_X_light')} />
+              <SelectField title={'スプレーの設定'} options={options2} register={register('turbine_X_spray')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【モーター】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'ライトの設定'} options={options1} register={register('motor_X_light')} />
+              <SelectField title={'スプレーの設定'} options={options3} register={register('motor_X_spray')} />
+              <SelectField title={'動作モードの設定'} options={options1} register={register('motor_X_motion')} />
+              <SelectField title={'動作モードがFREE時の回転域'} options={options1} register={register('motor_X_free_mode')} />
+            </div>
             <div style={{ display: 'flex', marginTop: 4 }}>
-              <SelectField
-                title={'ライトの設定'}
-                options={options1}
-                register={register('turbine_X_light')}
-              />
-              <SelectField
-                title={'ライトの設定'}
-                options={options2}
-                register={register('turbine_X_spray')}
-              />
+              <SelectField title={'動作モードがM1時の回転域'} options={options1} register={register('motor_X_mode_m1')} />
+              <SelectField title={'動作モードがM1時の回転数'} options={options1} register={register('motor_X_speed_m1')} />
+              <SelectField title={'動作モードがM2時の回転域'} options={options1} register={register('motor_X_mode_m2')} />
+              <SelectField title={'動作モードがM2時の回転数'} options={options1} register={register('motor_X_speed_m2')} />
+            </div>
+            <div style={{ display: 'flex', marginTop: 4 }}>
+              <SelectField title={'動作モードがM3時の回転域'} options={options1} register={register('motor_X_mode_m3')} />
+              <SelectField title={'動作モードがM3時の回転数'} options={options1} register={register('motor_X_speed_m3')} />
+              <SelectField title={'ME トルク設定（Low時）'} options={options1} register={register('motor_X_torque_low')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【エナック】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'ライトの設定'} options={options1} register={register('enac_X_light')} />
+              <SelectField title={'スプレーの設定'} options={options3} register={register('enac_X_spray')} />
+              <SelectField title={'動作モードの設定'} options={options1} register={register('enac_X_motion')} />
+              <SelectField title={'動作モードがFREE時のパワー'} options={options1} register={register('enac_X_free')} />
+              <SelectField title={'動作モードがM1時のパワー'} options={options1} register={register('enac_X_m1')} />
+              <SelectField title={'動作モードがM2時のパワー'} options={options1} register={register('enac_X_m2')} />
+              <SelectField title={'動作モードがM3時のパワー'} options={options1} register={register('enac_X_m3')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【ヘッドレスト】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'ヘッドレストの角度'} options={options1} register={register('headrest_angle')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【ユニット】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'M&Aを押したときの初期動作'} options={options1} register={register('chair_action_Initial')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【タービン】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'M&エアーフラッシングの時間'} options={options1} register={register('turbine_afcs')} />
+              <SelectField title={'M&タービンを戻した際のスプレー設定'} options={options1} register={register('turbine_return_spray')} />
+              <SelectField title={'M&タービンを戻した際のビューライト設定'} options={options1} register={register('turbine_return_light')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【モーター】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'モーターを戻した際の動作設定をどうするか'} options={options1} register={register('motor_return_memory')} />
+              <SelectField title={'モーターを戻した際のスプレー設定'} options={options1} register={register('motor_return_spray')} />
+              <SelectField title={'モーターを戻した際のビューライト設定'} options={options1} register={register('motor_return_light')} />
+              <SelectField title={'マイクロモーター回転特性'} options={options1} register={register('motor_rotate_characteristic')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【エナック】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'エナックを戻した際のスプレー設定'} options={options1} register={register('enac_return_spray')} />
+              <SelectField title={'エナックを戻した際のビューライト設定'} options={options1} register={register('enac_return_light')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【口腔外バキューム】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'インスツルメントと口腔外バキュームの連動　ON/OFF'} options={options1} register={register('extraoralvacuum_Interlock')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【ユニット】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'オートオフ時間(min)'} options={options1} register={register('unit_auto_off')} />
+              <SelectField title={'鉢洗い吐水時間(コップ給水時）'} options={options1} register={register('unit_pot_wash_time')} />
+              <SelectField title={'噴水吐水時間(椅子洗口位置移動時）'} options={options1} register={register('unit_fountain_time')} />
+              <SelectField title={'鉢洗いSW連動(SWオン後30秒後に鉢洗い水停止）'} options={options1} register={register('unit_pot_wash_Initial')} />
+              <SelectField title={'自動排水時間'} options={options1} register={register('unit_drainage_time')} />
+            </div>
+
+            <Typography color="primary" style={{ marginTop: 12 }}>
+              【無影灯設定】
+            </Typography>
+
+            <div style={{ display: 'flex' }}>
+              <SelectField title={'自動点灯/消灯(椅子オート動作時)'} options={options1} register={register('surgicallight_auto')} />
+              <SelectField title={'アーム下降時間'} options={options1} register={register('surgicallight_descent _time')} />
+              <SelectField title={'アーム自動跳上げ'} options={options1} register={register('surgicallight_automatic_rise')} />
             </div>
           </Paper>
         )}
@@ -274,12 +390,7 @@ export default function RecordPage() {
           </div>
         </div>
       </form>
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        message="登録して送信しました"
-      />
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} message="登録して送信しました" />
     </Container>
   )
 }
