@@ -16,12 +16,9 @@ async function findOne(req) {
 
 async function create(req) {
   const account = req.user.account
-  const { name, memory, staff, chair } = req.body
 
-  const re = await Record.create({ account, name, memory, staff, chair })
+  const re = await Record.create({ account, ...req.body })
   const record = await Record.find({ account, _id: re._id }).populate('staff').populate('chair')
-
-  console.log(record)
 
   const io = require('../utils/io').io()
   io.to(account.name).emit('record:create', record)
