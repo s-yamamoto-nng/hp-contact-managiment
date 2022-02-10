@@ -260,13 +260,13 @@ export default function RecordPage() {
             </div>
             <div style={{ display: 'flex', marginTop: 4 }}>
               <SelectField title={'動作モードがM1時の回転域'} options={options1} register={register('motor_X_mode_m1')} />
-              <SelectField title={'動作モードがM1時の回転数'} options={options1} register={register('motor_X_speed_m1')} />
+              <InputField title={'動作モードがM1時の回転数'} register={register('motor_X_speed_m1')} />
               <SelectField title={'動作モードがM2時の回転域'} options={options1} register={register('motor_X_mode_m2')} />
-              <SelectField title={'動作モードがM2時の回転数'} options={options1} register={register('motor_X_speed_m2')} />
+              <InputField title={'動作モードがM2時の回転数'} register={register('motor_X_speed_m2')} />
             </div>
             <div style={{ display: 'flex', marginTop: 4 }}>
               <SelectField title={'動作モードがM3時の回転域'} options={options1} register={register('motor_X_mode_m3')} />
-              <SelectField title={'動作モードがM3時の回転数'} options={options1} register={register('motor_X_speed_m3')} />
+              <InputField title={'動作モードがM3時の回転数'} register={register('motor_X_speed_m3')} />
               <SelectField title={'ME トルク設定（Low時）'} options={options1} register={register('motor_X_torque_low')} />
             </div>
 
@@ -278,10 +278,10 @@ export default function RecordPage() {
               <SelectField title={'ライトの設定'} options={options1} register={register('enac_X_light')} />
               <SelectField title={'スプレーの設定'} options={options3} register={register('enac_X_spray')} />
               <SelectField title={'動作モードの設定'} options={options1} register={register('enac_X_motion')} />
-              <SelectField title={'動作モードがFREE時のパワー'} options={options1} register={register('enac_X_free')} />
-              <SelectField title={'動作モードがM1時のパワー'} options={options1} register={register('enac_X_m1')} />
-              <SelectField title={'動作モードがM2時のパワー'} options={options1} register={register('enac_X_m2')} />
-              <SelectField title={'動作モードがM3時のパワー'} options={options1} register={register('enac_X_m3')} />
+              <InputField title={'動作モードがFREE時のパワー'} register={register('enac_X_free')} />
+              <InputField title={'動作モードがM1時のパワー'} register={register('enac_X_m1')} />
+              <InputField title={'動作モードがM2時のパワー'} register={register('enac_X_m2')} />
+              <InputField title={'動作モードがM3時のパワー'} register={register('enac_X_m3')} />
             </div>
 
             <Typography color="primary" style={{ marginTop: 12 }}>
@@ -289,7 +289,7 @@ export default function RecordPage() {
             </Typography>
 
             <div style={{ display: 'flex' }}>
-              <SelectField title={'ヘッドレストの角度'} options={options1} register={register('headrest_angle')} />
+              <InputField title={'ヘッドレストの角度'} register={register('headrest_angle')} />
             </div>
 
             <Typography color="primary" style={{ marginTop: 12 }}>
@@ -305,9 +305,9 @@ export default function RecordPage() {
             </Typography>
 
             <div style={{ display: 'flex' }}>
-              <SelectField title={'M&エアーフラッシングの時間'} options={options1} register={register('turbine_afcs')} />
-              <SelectField title={'M&タービンを戻した際のスプレー設定'} options={options1} register={register('turbine_return_spray')} />
-              <SelectField title={'M&タービンを戻した際のビューライト設定'} options={options1} register={register('turbine_return_light')} />
+              <InputField title={'エアーフラッシングの時間'} register={register('turbine_afcs')} />
+              <SelectField title={'タービンを戻した際のスプレー設定'} options={options1} register={register('turbine_return_spray')} />
+              <SelectField title={'タービンを戻した際のビューライト設定'} options={options1} register={register('turbine_return_light')} />
             </div>
 
             <Typography color="primary" style={{ marginTop: 12 }}>
@@ -344,10 +344,10 @@ export default function RecordPage() {
 
             <div style={{ display: 'flex' }}>
               <SelectField title={'オートオフ時間(min)'} options={options1} register={register('unit_auto_off')} />
-              <SelectField title={'鉢洗い吐水時間(コップ給水時）'} options={options1} register={register('unit_pot_wash_time')} />
-              <SelectField title={'噴水吐水時間(椅子洗口位置移動時）'} options={options1} register={register('unit_fountain_time')} />
+              <InputField title={'鉢洗い吐水時間(コップ給水時）'} register={register('unit_pot_wash_time')} />
+              <InputField title={'噴水吐水時間(椅子洗口位置移動時）'} register={register('unit_fountain_time')} />
               <SelectField title={'鉢洗いSW連動(SWオン後30秒後に鉢洗い水停止）'} options={options1} register={register('unit_pot_wash_Initial')} />
-              <SelectField title={'自動排水時間'} options={options1} register={register('unit_drainage_time')} />
+              <InputField title={'自動排水時間'} register={register('unit_drainage_time')} />
             </div>
 
             <Typography color="primary" style={{ marginTop: 12 }}>
