@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-
 import { store } from 'modules/store'
 import App from 'components/App'
 
@@ -12,13 +11,7 @@ const theme = createTheme({
     button: {
       textTransform: 'none',
     },
-    // fontSize: 14,
   },
-  // mixins: {
-  //   toolbar: {
-  //     minHeight: 42,
-  //   },
-  // },
   props: {
     MuiList: {
       dense: true,
