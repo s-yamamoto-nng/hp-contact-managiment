@@ -12,4 +12,6 @@ const schema = new Schema(
   }
 )
 
+schema.index({ name: 1, token: 1 })
+
 module.exports = mongoose.model('Account', schema)

@@ -68,49 +68,10 @@ const { verifyUser } = require('./utils/authenticate')
 app.use('/api/login', passport.authenticate('local'), express.Router().post('/', $(users.login)))
 app.use('/api/signup', express.Router().post('/', $(users.signup)))
 app.use('/api/refreshToken', express.Router().post('/', $(users.refreshToken)))
-
-app.use(
-  '/api/users',
-  verifyUser,
-  express.Router().get('/me', $(users.me)).get('/logout', $(users.logout))
-)
-
-app.use(
-  '/api/chats',
-  verifyUser,
-  express.Router().get('/', $(chats.getAll)).post('/', $(chats.create))
-)
-
-app.use(
-  '/api/records',
-  verifyUser,
-  express.Router().get('/', $(records.findOne)).post('/', $(records.create))
-)
-
-app.use(
-  '/api/staffs',
-  verifyUser,
-  express
-    .Router()
-    .get('/', $(staffs.getAll))
-    .post('/', $(staffs.create))
-    .put('/:id', $(staffs.update))
-    .delete('/:id', $(staffs.remove))
-)
-
-app.use(
-  '/api/chairs',
-  verifyUser,
-  express
-    .Router()
-    .get('/', $(chairs.getAll))
-    .post('/', $(chairs.create))
-    .put('/:id', $(chairs.update))
-    .delete('/:id', $(chairs.remove))
-)
-
-app.get('/', (req, res) => {
-  res.send({ status: 'success' })
-})
+app.use('/api/users', verifyUser, express.Router().get('/me', $(users.me)).get('/logout', $(users.logout)))
+app.use('/api/chats', verifyUser, express.Router().get('/', $(chats.getAll)).post('/', $(chats.create)))
+app.use('/api/records', verifyUser, express.Router().get('/', $(records.findOne)).post('/', $(records.create)))
+app.use('/api/staffs', verifyUser, express.Router().get('/', $(staffs.getAll)).post('/', $(staffs.create)).put('/:id', $(staffs.update)).delete('/:id', $(staffs.remove)))
+app.use('/api/chairs', verifyUser, express.Router().get('/', $(chairs.getAll)).post('/', $(chairs.create)).put('/:id', $(chairs.update)).delete('/:id', $(chairs.remove)))
 
 require('./utils/io').initialize(server)
