@@ -7,7 +7,7 @@ import TabPanel from '@mui/lab/TabPanel'
 import Login from './Login'
 import Register from './Register'
 
-export default function AuthPage () {
+export default function AuthPage() {
   const [value, setValue] = React.useState('1')
 
   const handleChange = (event, newValue) => {

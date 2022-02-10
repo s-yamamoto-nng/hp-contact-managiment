@@ -6,7 +6,6 @@ import CssBaseline from '@mui/material/CssBaseline'
 import MuiDrawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
 import MuiAppBar from '@mui/material/AppBar'
-import TaskIcon from '@mui/icons-material/Task'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
@@ -24,8 +23,6 @@ import PeopleIcon from '@mui/icons-material/People'
 import PersonIcon from '@mui/icons-material/Person'
 import AirlineSeatReclineExtraIcon from '@mui/icons-material/AirlineSeatReclineExtra'
 import CardTravelIcon from '@mui/icons-material/CardTravel'
-import ListAltIcon from '@mui/icons-material/ListAlt'
-import GroupIcon from '@mui/icons-material/Group'
 
 import { logoutUser } from 'modules/authSlice'
 
@@ -96,7 +93,7 @@ export default function Layout() {
       <AppBar position="absolute" open={open}>
         <Toolbar
           sx={{
-            pr: '24px',
+            pr: '24px', // keep right padding when drawer closed
           }}
         >
           <IconButton
@@ -112,7 +109,7 @@ export default function Layout() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-            お問い合わせ管理表
+            ユニット設定値管理システム
           </Typography>
           {user?.username && (
             <Button color="inherit" onClick={() => handleLogout()}>
@@ -136,23 +133,24 @@ export default function Layout() {
         </Toolbar>
         <Divider />
         <List>
-          <ListItem button component={Link} to="/project">
+          <ListItem button component={Link} to="/record">
             <ListItemIcon>
-              <GroupIcon />
+              <DashboardIcon />
             </ListItemIcon>
-            <ListItemText primary="プロジェクト選択" />
+            <ListItemText primary="データ管理" />
           </ListItem>
-          <ListItem button component={Link} to="/inquiry">
+          <Divider />
+          <ListItem button component={Link} to="/staff">
             <ListItemIcon>
-              <TaskIcon />
+              <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="お問い合わせ一覧" />
+            <ListItemText primary="スタッフ管理" />
           </ListItem>
-          <ListItem button component={Link} to="/task">
+          <ListItem button component={Link} to="/chair">
             <ListItemIcon>
-              <ListAltIcon />
+              <AirlineSeatReclineExtraIcon />
             </ListItemIcon>
-            <ListItemText primary="タスク登録" />
+            <ListItemText primary="チェア管理" />
           </ListItem>
         </List>
       </Drawer>
