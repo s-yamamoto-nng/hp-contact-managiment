@@ -15,24 +15,28 @@ function initialize(server) {
   io.sockets.use(async (socket, next) => {
     try {
       const { token, client, accountName } = socket.handshake.query
-      if (client === 'web') {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        const user = await User.findOne({ _id: decoded._id }).populate('account')
-        if (user) {
-          socket.join(user.account.name)
-          next()
-        } else {
-          next(createError(400))
-        }
-      } else if (client === 'unit') {
-        const account = await Account.findOne({ name: accountName, token: String(token) })
-        if (account) {
-          socket.join(accountName)
-          next()
-        } else {
-          next(createError(400))
-        }
-      }
+
+      socket.join(accountName)
+      next()
+
+      // if (client === 'web') {
+      //   const decoded = jwt.verify(token, process.env.JWT_SECRET)
+      //   const user = await User.findOne({ _id: decoded._id }).populate('account')
+      //   if (user) {
+      //     socket.join(user.account.name)
+      //     next()
+      //   } else {
+      //     next(createError(400))
+      //   }
+      // } else if (client === 'unit') {
+      //   const account = await Account.findOne({ name: accountName, token: String(token) })
+      //   if (account) {
+      //     socket.join(accountName)
+      //     next()
+      //   } else {
+      //     next(createError(400))
+      //   }
+      // }
     } catch (error) {
       next(createError(401))
     }
