@@ -7,26 +7,18 @@ import { swapChair } from './chairSlice'
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: {},
-    token: null,
-    error: {},
+    user: undefined,
+    error: null,
   },
   reducers: {
     login: (state, action) => {
+      localStorage.token = action.payload.user.token
       state.user = action.payload.user
-      state.token = action.payload.token
-      state.error = undefined
+      state.error = action.payload.error
     },
     logout: state => {
-      state.user = {}
-      state.token = undefined
-      state.error = undefined
-    },
-    refetch: state => {
+      delete localStorage.token
       state.user = undefined
-    },
-    user: (state, action) => {
-      state.user = action.payload
     },
     error: (state, action) => {
       state.error = action.payload
@@ -34,41 +26,9 @@ export const authSlice = createSlice({
   },
 })
 
-export const getMe = () => {
+export const resetPassword = model => {
   return dispatch => {
-    return client
-      .get('/api/users/me')
-      .then(res => {
-        dispatch(user(res.data))
-      })
-      .catch(() => {
-        dispatch(logout())
-      })
-  }
-}
-
-export const setError = message => {
-  return dispatch => {
-    dispatch(error(message))
-  }
-}
-
-export const refetchUser = () => {
-  return dispatch => {
-    dispatch(refetch())
-  }
-}
-
-export const setWebsocket = (token, accountName) => {
-  return dispatch => {
-    const socket = socketIOClient({
-      transports: ['websocket'],
-      query: { token, accountName, client: 'web' },
-    })
-    socket.on('staff:update', e => dispatch(swapStaff(e, 'update')))
-    socket.on('staff:remove', e => dispatch(swapStaff(e, 'remove')))
-    socket.on('chair:update', e => dispatch(swapChair(e, 'update')))
-    socket.on('chair:remove', e => dispatch(swapChair(e, 'remove')))
+    return client.post('/api/resetPassword', model).then(res => res.data)
   }
 }
 
@@ -77,11 +37,25 @@ export const loginUser = model => {
     return client
       .post('/api/login', model)
       .then(res => {
-        dispatch(setWebsocket(res.data.token, res.data.user.account.name))
-        dispatch(login(res.data))
+        const socket = socketIOClient({
+          transports: ['websocket'],
+          query: {
+            _id: res.data.user._id,
+            token: res.data.token,
+            accountName: res.data.user.account,
+            client: 'web',
+          },
+        })
+        socket.on('staff:update', e => dispatch(swapStaff(e, 'update')))
+        socket.on('staff:remove', e => dispatch(swapStaff(e, 'remove')))
+        socket.on('chair:update', e => dispatch(swapChair(e, 'update')))
+        socket.on('chair:remove', e => dispatch(swapChair(e, 'remove')))
+
+        dispatch(login({ user: res.data.user, error: null }))
       })
       .catch(() => {
-        dispatch(setError('ユーザー名、パスワードを確認してください'))
+        dispatch(logout())
+        dispatch(error('ログインできませんでした'))
       })
   }
 }
@@ -94,33 +68,17 @@ export const createUser = model => {
         dispatch(login(res.data))
       })
       .catch(err => {
-        dispatch(setError(err.message))
+        dispatch(error(err.message))
       })
   }
 }
 
 export const logoutUser = () => {
   return dispatch => {
-    return client.get('/api/users/logout').then(res => {
-      dispatch(logout())
-      window.localStorage.setItem('logout', Date.now())
-    })
+    dispatch(logout())
+    window.localStorage.setItem('logout', Date.now())
   }
 }
 
-export const refreshToken = () => {
-  return dispatch => {
-    return client
-      .post('/api/refreshToken')
-      .then(res => {
-        dispatch(setWebsocket(res.data.token, res.data.user.account.name))
-        dispatch(login(res.data))
-      })
-      .catch(() => {
-        dispatch(logout())
-      })
-  }
-}
-
-export const { user, login, logout, refetch, error } = authSlice.actions
+export const { login, logout, error } = authSlice.actions
 export default authSlice.reducer

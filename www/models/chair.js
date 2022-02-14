@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const schema = new Schema(
   {
-    account: { type: Schema.Types.ObjectId, ref: 'Account' },
+    account: { type: String, ref: 'Account' },
     id: { type: String, default: '' },
     name: { type: String, default: '' },
   },

@@ -1,13 +1,9 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const memory = new Schema({
-  name: { type: String, default: '' },
-})
-
 const schema = new Schema(
   {
-    account: { type: Schema.Types.ObjectId, ref: 'Account' },
+    account: { type: String, ref: 'Account' },
     name: { type: String, default: '' },
   },
   {

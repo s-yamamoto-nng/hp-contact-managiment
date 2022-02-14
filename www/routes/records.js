@@ -18,7 +18,7 @@ async function create(req) {
   const record = await Record.find({ account, _id: re._id }).populate('staff').populate('chair')
 
   const io = require('../utils/io').io()
-  io.to(account.name).emit('record:create', record)
+  io.to(account).emit('record:create', record)
 
   return { message: 'success' }
 }

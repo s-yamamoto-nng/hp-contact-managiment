@@ -2,24 +2,34 @@ import React, { useEffect, useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom'
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom'
 
-import { refreshToken } from 'modules/authSlice'
-import AuthPage from './AuthPage'
-import Layout from './Layout'
-import HomePage from './HomePage'
-import RecordPage from './RecordPage'
-import StaffPage from './StaffPage'
-import ChairPage from './ChairPage'
+import { loginUser, logoutUser } from 'modules/authSlice'
+import Login from './auth/Login'
+import Register from './auth/Register'
+import ResetPassword from './auth/ResetPassword'
+import HomeLayout from './home/Layout'
+import HomePage from './home/HomePage'
+import RecordPage from './home/RecordPage'
+import StaffPage from './home/StaffPage'
+import ChairPage from './home/ChairPage'
 
 const App = () => {
-  const token = useSelector(state => state.auth.token)
-  const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
+  const user = useSelector(state => state.auth.user)
+  const [loading, setLoading] = useState(true)
 
   const verifyUser = useCallback(() => {
-    dispatch(refreshToken()).finally(() => setLoading(false))
-    setTimeout(verifyUser, 5 * 60 * 1000)
+    const token = localStorage.token
+    if (token) {
+      dispatch(loginUser({ token })).finally(() => {
+        setLoading(false)
+      })
+      setTimeout(verifyUser, 5 * 60 * 1000)
+    } else {
+      dispatch(logoutUser())
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => {
@@ -39,39 +49,32 @@ const App = () => {
     }
   }, [syncLogout])
 
-  return !loading && !token ? (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<AuthPage />} />
-        <Route
-          path="*"
-          element={
-            <main style={{ padding: '1rem' }}>
-              <p>Not Found</p>
-            </main>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
-  ) : token ? (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
+  const PrivateRoute = () => {
+    return user ? <Outlet /> : <Navigate to="/login" />
+  }
+
+  return !loading ? (
+    <Routes>
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route path="resetPassword" element={<ResetPassword />} />
+      <Route exact path="/" element={<PrivateRoute />}>
+        <Route path="/" element={<HomeLayout />}>
           <Route path="home" element={<HomePage />} />
           <Route path="record" element={<RecordPage />} />
           <Route path="staff" element={<StaffPage />} />
           <Route path="chair" element={<ChairPage />} />
         </Route>
-        <Route
-          path="*"
-          element={
-            <main style={{ padding: '1rem' }}>
-              <p>Not Found</p>
-            </main>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+      </Route>
+      <Route
+        path="*"
+        element={
+          <main style={{ padding: '1rem' }}>
+            <p>Not Found</p>
+          </main>
+        }
+      />
+    </Routes>
   ) : (
     <Box
       style={{
@@ -84,15 +87,6 @@ const App = () => {
     >
       <CircularProgress size={24} />
     </Box>
-  )
-}
-
-function Dashboard() {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <Outlet />
-    </div>
   )
 }
 

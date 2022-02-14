@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { BrowserRouter } from 'react-router-dom'
 
 import { store } from 'modules/store'
 import App from 'components/App'
@@ -12,13 +13,7 @@ const theme = createTheme({
     button: {
       textTransform: 'none',
     },
-    // fontSize: 14,
   },
-  // mixins: {
-  //   toolbar: {
-  //     minHeight: 42,
-  //   },
-  // },
   props: {
     MuiList: {
       dense: true,
@@ -55,7 +50,9 @@ ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </Provider>
     </ThemeProvider>
   </React.StrictMode>,

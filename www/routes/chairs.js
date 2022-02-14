@@ -16,7 +16,7 @@ async function remove(req) {
   if (!staff) throw createError(404)
 
   const io = require('../utils/io').io()
-  io.to(account.name).emit('chair:remove', staff)
+  io.to(account).emit('chair:remove', staff)
 
   return await staff.remove()
 }
@@ -32,7 +32,7 @@ async function update(req) {
   const re = await Chair.findOne({ _id: req.params.id, account })
 
   const io = require('../utils/io').io()
-  io.to(account.name).emit('chair:update', re)
+  io.to(account).emit('chair:update', re)
 
   return re
 }
@@ -49,7 +49,7 @@ async function create(req) {
   const staff = await Chair.create({ account, name, id })
 
   const io = require('../utils/io').io()
-  io.to(account.name).emit('chair:update', staff)
+  io.to(account).emit('chair:update', staff)
 
   return { message: 'success' }
 }

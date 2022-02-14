@@ -6,9 +6,9 @@ client.defaults.headers.common['Content-Type'] = 'application/json'
 
 client.interceptors.request.use(
   req => {
-    const token = store.getState().auth.token
-    if (token) {
-      req.headers['Authorization'] = `Bearer ${token}`
+    const user = store.getState().auth.user
+    if (user) {
+      req.headers['Authorization'] = `Bearer ${user.token}`
     } else {
       delete req.headers.Authorization
     }

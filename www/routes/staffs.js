@@ -16,7 +16,7 @@ async function remove(req) {
   if (!staff) throw createError(404)
 
   const io = require('../utils/io').io()
-  io.to(account.name).emit('staff:remove', staff)
+  io.to(account).emit('staff:remove', staff)
 
   return await staff.remove()
 }
@@ -30,7 +30,7 @@ async function update(req) {
   if (!staff) throw createError(404)
 
   const io = require('../utils/io').io()
-  io.to(account.name).emit('staff:update', staff)
+  io.to(account).emit('staff:update', staff)
 
   return staff
 }
@@ -47,7 +47,7 @@ async function create(req) {
   const staff = await Staff.create({ account, name })
 
   const io = require('../utils/io').io()
-  io.to(account.name).emit('staff:update', staff)
+  io.to(account).emit('staff:update', staff)
 
   return { message: 'success' }
 }

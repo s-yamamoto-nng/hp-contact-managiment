@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const schema = new Schema(
   {
-    name: { type: String, required: true },
+    _id: { type: String },
     token: { type: String, default: '12345' },
   },
   {
