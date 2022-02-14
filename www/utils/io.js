@@ -13,7 +13,7 @@ function initialize(server) {
 
   io.sockets.use(async (socket, next) => {
     try {
-      const { _id, token, accountName, client } = socket.handshake.query
+      const { id, token, accountName, client } = socket.handshake.query
       if (client === 'unit') {
         if (await Account.findOne({ _id: accountName, token })) {
           socket.join(accountName)
@@ -22,7 +22,7 @@ function initialize(server) {
           next(createError(400))
         }
       } else {
-        if (await User.findOne({ _id, token })) {
+        if (await User.findOne({ _id: id, token })) {
           socket.join(accountName)
           next()
         } else {

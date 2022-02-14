@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import socketIOClient from 'socket.io-client'
+import io from 'socket.io-client'
 import { client } from 'utils'
 import { swapStaff } from './staffSlice'
 import { swapChair } from './chairSlice'
@@ -37,10 +37,10 @@ export const loginUser = model => {
     return client
       .post('/api/login', model)
       .then(res => {
-        const socket = socketIOClient({
+        const socket = io({
           transports: ['websocket'],
           query: {
-            _id: res.data.user._id,
+            id: res.data.user._id,
             token: res.data.token,
             accountName: res.data.user.account,
             client: 'web',

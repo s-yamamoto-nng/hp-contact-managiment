@@ -1,6 +1,5 @@
 const express = require('express')
 const cors = require('cors')
-const cookieParser = require('cookie-parser')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -9,10 +8,12 @@ if (process.env.NODE_ENV !== 'production') {
 require('./utils/connectDB')
 
 const app = express()
+const server = app.listen(process.env.PORT || 3222, () => {
+  console.log('server started at port:', server.address().port)
+})
+
 app.use(express.json())
 app.use(cors())
-
-app.use(express.static(`${__dirname}/public`))
 
 const createError = require('http-errors')
 const HttpError = createError.HttpError
@@ -36,7 +37,7 @@ const $ = handler => async (req, res) => {
   }
 }
 
-const { User } = require('./models')
+const { User, Account } = require('./models')
 const { users, staffs, chairs, records } = require('./routes')
 
 const passport = require('passport')
@@ -60,8 +61,6 @@ app.use('/api/records', userAuthenticate, express.Router().get('/', $(records.fi
 app.use('/api/staffs', userAuthenticate, express.Router().get('/', $(staffs.getAll)).post('/', $(staffs.create)).put('/:id', $(staffs.update)).delete('/:id', $(staffs.remove)))
 app.use('/api/chairs', userAuthenticate, express.Router().get('/', $(chairs.getAll)).post('/', $(chairs.create)).put('/:id', $(chairs.update)).delete('/:id', $(chairs.remove)))
 
-const server = app.listen(process.env.PORT || 3222, () => {
-  console.log('server started at port:', server.address().port)
-})
+app.use(express.static(`${__dirname}/public`))
 
 require('./utils/io').initialize(server)

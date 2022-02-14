@@ -2,3 +2,4 @@ node_modules
 db
 www/public
 yarn-error.log
+.vscode
