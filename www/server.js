@@ -61,6 +61,6 @@ app.use('/api/records', userAuthenticate, express.Router().get('/', $(records.fi
 app.use('/api/staffs', userAuthenticate, express.Router().get('/', $(staffs.getAll)).post('/', $(staffs.create)).put('/:id', $(staffs.update)).delete('/:id', $(staffs.remove)))
 app.use('/api/chairs', userAuthenticate, express.Router().get('/', $(chairs.getAll)).post('/', $(chairs.create)).put('/:id', $(chairs.update)).delete('/:id', $(chairs.remove)))
 
-app.use(express.static(`${__dirname}/public`))
+app.use(express.static(__dirname + '/public'))
 
 require('./utils/io').initialize(server)

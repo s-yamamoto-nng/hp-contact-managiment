@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -16,12 +17,16 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { resetPassword } from 'modules/authSlice'
 
 const schema = yup.object({
-  email: yup.string().required('必須です').email('正しいメールアドレス入力してください'),
+  email: yup
+    .string()
+    .required('必須です')
+    .email('正しいメールアドレス入力してください'),
   password: yup.string().required('必須です'),
 })
 
 const ResetPassword = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const error = useSelector(state => state.auth.error)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [reset, setReset] = useState(false)
@@ -64,9 +69,40 @@ const ResetPassword = () => {
           ユニット設定値管理システム
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
-          <TextField margin="normal" required fullWidth id="email" label="Eメールアドレス" name="email" autoComplete="email" autoFocus {...register('email')} error={'email' in errors} helperText={errors.email?.message} />
-          <TextField margin="normal" required fullWidth type="password" id="password" label="新しいパスワード" name="password" autoComplete="password" {...register('password')} error={'password' in errors} helperText={errors.password?.message} />
-          <Button type="submit" fullWidth variant="contained" size="large" disabled={isSubmitting} sx={{ mt: 3, mb: 2 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Eメールアドレス"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            {...register('email')}
+            error={'email' in errors}
+            helperText={errors.email && errors.email.message}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            type="password"
+            id="password"
+            label="新しいパスワード"
+            name="password"
+            autoComplete="password"
+            {...register('password')}
+            error={'password' in errors}
+            helperText={errors.password && errors.password.message}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            size="large"
+            disabled={isSubmitting}
+            sx={{ mt: 3, mb: 2 }}
+          >
             パスワードを変更する
           </Button>
           {error && <Alert severity="error">{error}</Alert>}
@@ -80,12 +116,22 @@ const ResetPassword = () => {
         >
           <Grid container>
             <Grid item xs>
-              <Link href="/login" variant="body2">
+              <Link
+                onClick={() => {
+                  history.push('/login')
+                }}
+                variant="body2"
+              >
                 ログインはこちら
               </Link>
             </Grid>
             <Grid item>
-              <Link href="/register" variant="body2">
+              <Link
+                onClick={() => {
+                  history.push('/register')
+                }}
+                variant="body2"
+              >
                 アカウントを作成する
               </Link>
             </Grid>

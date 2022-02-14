@@ -1,35 +1,35 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = {
   mode: 'development',
+  devtool: 'cheap-module-eval-source-map',
   entry: {
-    'js/bundle': ['@babel/polyfill', `${__dirname}/src/index`],
+    emdx: [__dirname + '/src/index'],
   },
   output: {
-    publicPath: '/',
     filename: '[name].js',
+    publicPath: '/',
   },
   resolve: {
     modules: ['src', 'node_modules'],
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['.js', '.json'],
   },
   devServer: {
-    static: {
-      directory: `${__dirname}/src/static`,
-    },
+    contentBase: __dirname + '/src/static',
     historyApiFallback: true,
-    hot: true,
+    inline: true,
+    stats: 'errors-only',
     port: 3223,
     host: '0.0.0.0',
     proxy: {
       '/api/**': {
-        target: 'http://localhost:3222',
+        target: 'http://localhost:' + 3222,
         secure: false,
         changeOrigin: true,
       },
       '/socket.io/**': {
-        target: 'ws://localhost:3222',
+        target: 'ws://localhost:' + 3222,
         ws: true,
         secure: false,
         changeOrigin: true,
@@ -40,15 +40,26 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: `${__dirname}/src`,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-            },
+        include: __dirname + '/src',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: { browsers: ['last 2 versions', '> 1%'] },
+                  loose: true,
+                  modules: false,
+                  useBuiltIns: 'usage',
+                  corejs: 3,
+                },
+              ],
+              '@babel/preset-react',
+            ],
+            plugins: ['@babel/plugin-syntax-dynamic-import', ['@babel/plugin-proposal-decorators', { legacy: true }], ['@babel/plugin-proposal-class-properties', { loose: false }], 'react-hot-loader/babel'],
           },
-        ],
+        },
       },
       {
         test: /\.css$/i,
@@ -57,11 +68,11 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    new Dotenv(),
     new HtmlWebpackPlugin({
       template: 'src/static/index.html',
       filename: 'index.html',
-      chunks: ['js/bundle'],
+      chunks: ['emdx'],
     }),
   ],
 }

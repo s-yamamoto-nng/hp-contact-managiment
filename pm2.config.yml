@@ -1,5 +1,0 @@
-name: unit-settings
-script: www/server.js
-exec_mode: 'cluster'
-instances: 1
-log-date-format: 'YYYY-MM-DD HH:mm Z'

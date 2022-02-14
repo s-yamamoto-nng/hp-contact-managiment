@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
@@ -17,16 +18,23 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { createUser } from 'modules/authSlice'
 
 const schema = yup.object({
-  email: yup.string().required('必須です').email('正しいメールアドレス入力してください'),
+  email: yup
+    .string()
+    .required('必須です')
+    .email('正しいメールアドレス入力してください'),
   password: yup
     .string()
     .required('必須です')
     .min(6, '6文字以上必要です')
-    .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&].*$/, 'パスワードが単純です。数値と記号を組み合わせてください'),
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&].*$/,
+      'パスワードが単純です。数値と記号を組み合わせてください'
+    ),
 })
 
 const Register = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const error = useSelector(state => state.auth.error)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [account, setAccount] = useState(false)
@@ -70,10 +78,53 @@ const Register = () => {
           ユニット設定値管理システム
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
-          <TextField margin="normal" required fullWidth id="accountName" label="アカウント名" name="accountName" autoComplete="account" autoFocus {...register('accountName')} error={'accountName' in errors} helperText={errors.accountName?.message} />
-          <TextField margin="normal" required fullWidth id="email" label="Eメールアドレス" name="email" autoComplete="email" autoFocus {...register('email')} error={'email' in errors} helperText={errors.email?.message} />
-          <TextField margin="normal" required fullWidth type="password" id="password" label="パスワード" name="password" autoComplete="password" {...register('password')} error={'password' in errors} helperText={errors.password?.message} />
-          <Button type="submit" fullWidth variant="contained" disabled={isSubmitting} size="large" sx={{ mt: 3, mb: 2 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="accountName"
+            label="アカウント名"
+            name="accountName"
+            autoComplete="account"
+            autoFocus
+            {...register('accountName')}
+            error={'accountName' in errors}
+            helperText={errors.accountName && errors.accountName.message}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Eメールアドレス"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            {...register('email')}
+            error={'email' in errors}
+            helperText={errors.email && errors.email.message}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            type="password"
+            id="password"
+            label="パスワード"
+            name="password"
+            autoComplete="password"
+            {...register('password')}
+            error={'password' in errors}
+            helperText={errors.password && errors.password.message}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={isSubmitting}
+            size="large"
+            sx={{ mt: 3, mb: 2 }}
+          >
             新規登録
           </Button>
           {error && <Alert severity="error">{error}</Alert>}
@@ -88,7 +139,12 @@ const Register = () => {
           <Grid container>
             <Grid item xs></Grid>
             <Grid item>
-              <Link href="/login" variant="body2">
+              <Link
+                onClick={() => {
+                  history.push('/login')
+                }}
+                variant="body2"
+              >
                 ログインはこちら
               </Link>
             </Grid>

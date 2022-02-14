@@ -1,6 +1,6 @@
-import * as React from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Outlet, Link, useNavigate } from 'react-router-dom'
+import { Route, Redirect, Switch, useHistory, Link } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import MuiDrawer from '@mui/material/Drawer'
@@ -20,11 +20,13 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import PeopleIcon from '@mui/icons-material/People'
-import PersonIcon from '@mui/icons-material/Person'
 import AirlineSeatReclineExtraIcon from '@mui/icons-material/AirlineSeatReclineExtra'
-import CardTravelIcon from '@mui/icons-material/CardTravel'
 
 import { logoutUser } from 'modules/authSlice'
+
+import RecordPage from './RecordPage'
+import StaffPage from './StaffPage'
+import ChairPage from './ChairPage'
 
 const drawerWidth = 240
 
@@ -73,7 +75,7 @@ const AppBar = styled(MuiAppBar, {
 export default function Layout() {
   const user = useSelector(state => state.auth.user)
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const history = useHistory()
 
   const [open, setOpen] = React.useState(true)
   const toggleDrawer = () => {
@@ -82,7 +84,7 @@ export default function Layout() {
 
   const handleLogout = () => {
     dispatch(logoutUser())
-    navigate('/')
+    history.push('/')
   }
 
   return (
@@ -91,7 +93,7 @@ export default function Layout() {
       <AppBar position="absolute" open={open}>
         <Toolbar
           sx={{
-            pr: '24px', // keep right padding when drawer closed
+            pr: '24px',
           }}
         >
           <IconButton
@@ -155,7 +157,8 @@ export default function Layout() {
       <Box
         component="main"
         sx={{
-          backgroundColor: theme => (theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900]),
+          backgroundColor: theme =>
+            theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
           flexGrow: 1,
           height: '100vh',
           overflow: 'auto',
@@ -163,7 +166,12 @@ export default function Layout() {
       >
         <Toolbar />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Outlet />
+          <Switch>
+            <Route path="/record" component={RecordPage} />
+            <Route path="/staff" component={StaffPage} />
+            <Route path="/chair" component={ChairPage} />
+            <Redirect to="/record" />
+          </Switch>
         </Container>
       </Box>
     </Box>

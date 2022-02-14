@@ -28,7 +28,12 @@ export const authSlice = createSlice({
 
 export const resetPassword = model => {
   return dispatch => {
-    return client.post('/api/resetPassword', model).then(res => res.data)
+    return client
+      .post('/api/resetPassword', model)
+      .then(res => res.data)
+      .catch(() => {
+        dispatch(error('パスワードを変更出来ませんでした'))
+      })
   }
 }
 
