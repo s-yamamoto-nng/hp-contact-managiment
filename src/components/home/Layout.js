@@ -28,31 +28,29 @@ import { logoutUser } from 'modules/authSlice'
 
 const drawerWidth = 240
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: prop => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
+const Drawer = styled(MuiDrawer, { shouldForwardProp: prop => prop !== 'open' })(({ theme, open }) => ({
+  '& .MuiDrawer-paper': {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: 'border-box',
+    ...(!open && {
+      overflowX: 'hidden',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.leavingScreen,
       }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  })
-)
+      width: theme.spacing(7),
+      [theme.breakpoints.up('sm')]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}))
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: prop => prop !== 'open',
@@ -111,7 +109,7 @@ export default function Layout() {
           <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
             ユニット設定値管理システム
           </Typography>
-          {user?.username && (
+          {user && (
             <Button color="inherit" onClick={() => handleLogout()}>
               ログアウト
             </Button>
@@ -157,8 +155,7 @@ export default function Layout() {
       <Box
         component="main"
         sx={{
-          backgroundColor: theme =>
-            theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
+          backgroundColor: theme => (theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900]),
           flexGrow: 1,
           height: '100vh',
           overflow: 'auto',

@@ -25,7 +25,6 @@ const App = () => {
       dispatch(loginUser({ token })).finally(() => {
         setLoading(false)
       })
-      setTimeout(verifyUser, 5 * 60 * 1000)
     } else {
       dispatch(logoutUser())
       setLoading(false)
@@ -35,19 +34,6 @@ const App = () => {
   useEffect(() => {
     verifyUser()
   }, [verifyUser])
-
-  const syncLogout = useCallback(event => {
-    if (event.key === 'logout') {
-      window.location.reload()
-    }
-  }, [])
-
-  useEffect(() => {
-    window.addEventListener('storage', syncLogout)
-    return () => {
-      window.removeEventListener('storage', syncLogout)
-    }
-  }, [syncLogout])
 
   const PrivateRoute = () => {
     return user ? <Outlet /> : <Navigate to="/login" />
