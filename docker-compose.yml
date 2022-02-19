@@ -3,7 +3,7 @@ version: '3'
 services:
   mongo:
     image: mongo:4
-    container_name: unit-mongo
+    container_name: contact-mongo
     volumes:
       - ./db:/data/db
     ports:
@@ -11,7 +11,7 @@ services:
 
   mongo-express:
     image: mongo-express
-    container_name: unit-mongo-express
+    container_name: contact-mongo-express
     ports:
       - 8081:8081
     depends_on:

@@ -18,15 +18,12 @@ import Button from '@mui/material/Button'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import PeopleIcon from '@mui/icons-material/People'
-import AirlineSeatReclineExtraIcon from '@mui/icons-material/AirlineSeatReclineExtra'
-
-import { logoutUser } from 'modules/authSlice'
-
-import RecordPage from './RecordPage'
-import StaffPage from './StaffPage'
-import ChairPage from './ChairPage'
+import ProjectPage from './ProjectPage'
+import TaskPage from './TaskPage'
+import { fetchAsyncLogout } from 'modules/authSlice'
+import ListAltIcon from '@mui/icons-material/ListAlt'
+import GroupIcon from '@mui/icons-material/Group'
+import TaskIcon from '@mui/icons-material/Task'
 
 const drawerWidth = 240
 
@@ -83,7 +80,7 @@ export default function Layout() {
   }
 
   const handleLogout = () => {
-    dispatch(logoutUser())
+    dispatch(fetchAsyncLogout())
     history.push('/')
   }
 
@@ -109,7 +106,7 @@ export default function Layout() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-            ユニット設定値管理システム
+            お問い合わせ管理表
           </Typography>
           {user && (
             <Button color="inherit" onClick={() => handleLogout()}>
@@ -133,24 +130,23 @@ export default function Layout() {
         </Toolbar>
         <Divider />
         <List>
-          <ListItem button component={Link} to="/record">
+          <ListItem button component={Link} to="/project">
             <ListItemIcon>
-              <DashboardIcon />
+              <GroupIcon />
             </ListItemIcon>
-            <ListItemText primary="データ管理" />
+            <ListItemText primary="プロジェクト選択" />
           </ListItem>
-          <Divider />
-          <ListItem button component={Link} to="/staff">
+          {/* <ListItem button component={Link} to="/inquiry">
             <ListItemIcon>
-              <PeopleIcon />
+              <TaskIcon />
             </ListItemIcon>
-            <ListItemText primary="スタッフ管理" />
-          </ListItem>
-          <ListItem button component={Link} to="/chair">
+            <ListItemText primary="お問い合わせ一覧" />
+          </ListItem> */}
+          <ListItem button component={Link} to="/task">
             <ListItemIcon>
-              <AirlineSeatReclineExtraIcon />
+              <ListAltIcon />
             </ListItemIcon>
-            <ListItemText primary="チェア管理" />
+            <ListItemText primary="タスク登録" />
           </ListItem>
         </List>
       </Drawer>
@@ -167,10 +163,8 @@ export default function Layout() {
         <Toolbar />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Switch>
-            <Route path="/record" component={RecordPage} />
-            <Route path="/staff" component={StaffPage} />
-            <Route path="/chair" component={ChairPage} />
-            <Redirect to="/record" />
+            <Route path="/project" component={ProjectPage} />
+            <Route path="/task" component={TaskPage} />
           </Switch>
         </Container>
       </Box>

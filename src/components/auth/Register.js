@@ -14,8 +14,7 @@ import Container from '@mui/material/Container'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-
-import { createUser } from 'modules/authSlice'
+import { fetchAsyncRegister } from 'modules/authSlice'
 
 const schema = yup.object({
   email: yup
@@ -55,7 +54,7 @@ const Register = () => {
       password: data.password,
       accountName: data.accountName,
     }
-    dispatch(createUser(model))
+    dispatch(fetchAsyncRegister(model))
       .then(() => setAccount(true))
       .finally(() => {
         setIsSubmitting(false)
@@ -75,7 +74,7 @@ const Register = () => {
           <AccountCircleIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          ユニット設定値管理システム
+          お問い合わせ管理表
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
           <TextField

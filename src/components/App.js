@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { HashRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 
-import { loginUser } from 'modules/authSlice'
+import { fetchAsyncLogin } from 'modules/authSlice'
 import Login from './auth/Login'
 import Register from './auth/Register'
 import ResetPassword from './auth/ResetPassword'
@@ -16,7 +16,7 @@ const App = () => {
   useEffect(() => {
     const token = localStorage.token
     if (token) {
-      dispatch(loginUser({ token })).then(() => {
+      dispatch(fetchAsyncLogin({ token })).then(() => {
         setLogin(true)
       })
     } else {

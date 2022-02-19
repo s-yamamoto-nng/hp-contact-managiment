@@ -15,7 +15,7 @@ const schema = new Schema(
     timestamps: true,
     versionKey: false,
     toJSON: {
-      transform: function (doc, obj) {
+      transform: function(doc, obj) {
         if (!obj.password) obj.nopass = true
         delete obj.password
         delete obj.token
@@ -28,15 +28,15 @@ const schema = new Schema(
 schema.index({ account: 1, name: 1 })
 schema.index({ token: 1 }, { unique: true, sparse: true })
 
-schema.method('cipher', function (password) {
+schema.method('cipher', function(password) {
   return crypto.pbkdf2Sync(password, this._id.toString(), 96, 32, 'sha512').toString('hex')
 })
 
-schema.method('verify', function (password) {
+schema.method('verify', function(password) {
   return this.password === this.cipher(password)
 })
 
-schema.static('generateToken', function () {
+schema.static('generateToken', function() {
   const length = 32
   const chars = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789_-'
   const rnd = crypto.randomBytes(length)
