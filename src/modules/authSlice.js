@@ -33,7 +33,7 @@ export const authSlice = createSlice({
       state.user = undefined
     },
   },
-  
+
   extraReducers: builder => {
     builder.addCase(fetchAsyncReset.rejected, (state, action) => {
       state.error = 'パスワードを変更できませんでした'

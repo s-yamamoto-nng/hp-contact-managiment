@@ -37,29 +37,23 @@ const $ = handler => async (req, res) => {
   }
 }
 
-const { User, Account } = require('./models')
+const { User } = require('./models')
 const { users } = require('./routes')
 
 const passport = require('passport')
 const BearerStrategy = require('passport-http-bearer')
 passport.use(
   'user',
-  new BearerStrategy({ passReqToCallback: true }, function (req, token, done) {
+  new BearerStrategy({ passReqToCallback: true }, function(req, token, done) {
     User.findOne({ token })
       .then(user => done(null, user || false))
       .catch(err => done(err))
   })
 )
 
-const userAuthenticate = passport.authenticate('user', { session: false })
-
 app.use('/api/login', express.Router().post('/', $(users.login)))
 app.use('/api/signup', express.Router().post('/', $(users.signup)))
 app.use('/api/resetPassword', express.Router().post('/', $(users.resetPassword)))
-
-// app.use('/api/records', userAuthenticate, express.Router().get('/', $(records.findOne)).post('/', $(records.create)))
-// app.use('/api/staffs', userAuthenticate, express.Router().get('/', $(staffs.getAll)).post('/', $(staffs.create)).put('/:id', $(staffs.update)).delete('/:id', $(staffs.remove)))
-// app.use('/api/chairs', userAuthenticate, express.Router().get('/', $(chairs.getAll)).post('/', $(chairs.create)).put('/:id', $(chairs.update)).delete('/:id', $(chairs.remove)))
 
 app.use(express.static(__dirname + '/public'))
 
