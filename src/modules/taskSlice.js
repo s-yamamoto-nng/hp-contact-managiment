@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { client } from 'utils'
+const CancelToken = client.CancelToken
+let cancel
 
 export const fetchAsyncCreate = createAsyncThunk('createTask/post', async auth => {
   const res = await client.post('/api/createTask', auth)
@@ -14,6 +16,14 @@ export const fetchAsyncDelete = createAsyncThunk('deleteTask/post', async auth =
 export const fetchAsyncEdit = createAsyncThunk('editTask/post', async auth => {
   const res = await client.update('/api/editTask', auth)
   return res.data
+})
+
+export const fetchAsyncLoadTask = createAsyncThunk('loadTask/get', async => {
+  return client.get('/api/tasks', {
+    cancelToken: new CancelToken(c => {
+      cancel = c
+    }),
+  })
 })
 
 export const taskSlice = createSlice({
@@ -45,6 +55,13 @@ export const taskSlice = createSlice({
     builder.addCase(fetchAsyncDelete.fulfilled, (state, action) => {
       state.list = action.payload
       state.error = {}
+    })
+    builder.addCase(fetchAsyncLoadTask.fulfilled, (state, action) => {
+      state.list = action.payload
+      state.error = action.payload
+    })
+    builder.addCase(fetchAsyncLoadTask.rejected, (state, action) => {
+      state.error = action.payload
     })
   },
 })

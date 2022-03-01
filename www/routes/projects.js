@@ -30,9 +30,10 @@ async function getAll(req) {
 
 async function create(req) {
   const account = req.user.account
-  const { name } = req.body
-
-  await Project.create({ account, name })
+  const { name, id } = req.body
+  const io = require('../utils/io').io()
+  io.to(account).emit('project:update', project)
+  await Project.create({ account, name, id })
 
   return { message: 'success' }
 }

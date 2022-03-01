@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { client } from 'utils'
+import io from 'socket.io-client'
+import { swapProject } from './projectSlice'
 
 export const fetchAsyncLogin = createAsyncThunk('login/post', async auth => {
   const res = await client.post('/api/login', auth)
@@ -39,6 +41,17 @@ export const authSlice = createSlice({
       state.error = 'パスワードを変更できませんでした'
     })
     builder.addCase(fetchAsyncLogin.fulfilled, (state, action) => {
+      const socket = io({
+        transports: ['websocket'],
+        query: {
+          id: action.payload.user._id,
+          token: action.payload.token,
+          accountName: action.payload.user.account,
+          client: 'web',
+        },
+      })
+      socket.on('project:update', e => dispatch(swapProject(e, 'update')))
+      socket.on('project:remove', e => dispatch(swapProject(e, 'remove')))
       localStorage.token = action.payload.user.token
       state.user = action.payload.user
       state.error = action.payload.error

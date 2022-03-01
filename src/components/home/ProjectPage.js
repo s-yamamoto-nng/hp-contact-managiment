@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Select from 'react-select'
 import {
   Fab,
+  Container,
   Button,
   TextField,
   Dialog,
@@ -21,7 +22,13 @@ import {
 import { useForm, Controller } from 'react-hook-form'
 import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { fetchAsyncCreate, fetchAsyncDelete, fetchAsyncEdit } from '../../modules/projectSlice'
+import { fetchAsyncCreate, fetchAsyncDelete, fetchAsyncEdit, fetchAsyncLoadProject } from '../../modules/projectSlice'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+
+const schema = yup.object().shape({
+  name: yup.string().required('プロジェクト名は必須です。'),
+})
 
 export default function ProjectPage() {
   const dispatch = useDispatch()
@@ -29,13 +36,30 @@ export default function ProjectPage() {
   const [open, setOpen] = useState(false)
   const [confirmDeletion, setConfirmDeletion] = useState(null)
   const [selected, setSelected] = useState(null)
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     mode: 'onChange',
+    resolver: yupResolver(schema),
   })
+
+  useEffect(() => {
+    dispatch(fetchAsyncLoadProject())
+  }, [])
+
+  // const onSubmit = data => {
+  //   if (selected) {
+  //     console.log('true')
+  //     dispatch(fetchAsyncEdit({ ...selected, name: data.name, id: data.id })).then(() => setOpen(false))
+  //   } else {
+  //     console.log('false')
+  //     dispatch(fetchAsyncCreate({ name: data.name, id: data.id })).then(() => setOpen(false))
+  //   }
+  // }
   const onSubmit = data => {
     if (selected) {
+      console.log('true')
       dispatch(fetchAsyncEdit({ ...selected, name: data.name })).then(() => setOpen(false))
     } else {
+      console.log('false')
       dispatch(fetchAsyncCreate({ name: data.name })).then(() => setOpen(false))
     }
   }
@@ -59,23 +83,30 @@ export default function ProjectPage() {
     dispatch(fetchAsyncDelete(confirmDeletion)).then(() => setConfirmDeletion(null))
   }
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Container maxWidth="lg">
       <Paper style={{ padding: 50 }}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Controller
             name="project"
             control={control}
             render={({ field }) => (
+              // <Select
+              //   {...field}
+              //   defaultValue={{ label: 'プロジェクトの選択' }}
+              //   options={[
+              //     { value: 'nngHp', label: 'NNG HP' },
+              //     { value: 'hospimaHp', label: 'HOSPIMA HP' },
+              //     { value: 'adjHp', label: 'ADJ HP' },
+              //     { value: 'adjSalon', label: 'ADJ SALON' },
+              //     { value: 'kdchp', label: 'KDC HP' },
+              //   ]}
+              // />
               <Select
                 {...field}
                 defaultValue={{ label: 'プロジェクトの選択' }}
-                options={[
-                  { value: 'nngHp', label: 'NNG HP' },
-                  { value: 'hospimaHp', label: 'HOSPIMA HP' },
-                  { value: 'adjHp', label: 'ADJ HP' },
-                  { value: 'adjSalon', label: 'ADJ SALON' },
-                  { value: 'kdchp', label: 'KDC HP' },
-                ]}
+                options={projects.map(project => {
+                  return { value: project.id, label: project.name }
+                })}
               />
             )}
           />
@@ -117,7 +148,7 @@ export default function ProjectPage() {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <TextField {...field} required margin="dense" style={{ width: '100%' }} label="氏名" />
+                <TextField {...field} required margin="dense" style={{ width: '100%' }} label="プロジェクト名" />
               )}
             />
           </DialogContent>
@@ -130,6 +161,6 @@ export default function ProjectPage() {
       <Fab color="primary" style={{ position: 'fixed', right: 32, bottom: 32 }} onClick={() => handleNew()}>
         <AddIcon />
       </Fab>
-    </form>
+    </Container>
   )
 }
