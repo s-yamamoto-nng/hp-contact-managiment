@@ -20,10 +20,11 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import ProjectPage from './ProjectPage'
 import TaskPage from './TaskPage'
-import { fetchAsyncLogout } from 'modules/authSlice'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import GroupIcon from '@mui/icons-material/Group'
 import TaskIcon from '@mui/icons-material/Task'
+import { logout } from '../../modules/authSlice'
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
 
 const drawerWidth = 240
 
@@ -80,7 +81,7 @@ export default function Layout() {
   }
 
   const handleLogout = () => {
-    dispatch(fetchAsyncLogout())
+    dispatch(logout())
     history.push('/')
   }
 
@@ -107,6 +108,10 @@ export default function Layout() {
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
             お問い合わせ管理表
+          </Typography>
+          <PersonOutlineIcon sx={{ marginRight: 0.8, marginTop: 0.5 }} />
+          <Typography component="h1" variant="h6" color="inherit" sx={{ marginRight: 1 }}>
+            {user.account}さん
           </Typography>
           {user && (
             <Button color="inherit" onClick={() => handleLogout()}>

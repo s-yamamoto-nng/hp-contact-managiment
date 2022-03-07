@@ -4,9 +4,9 @@ const Schema = mongoose.Schema
 const schema = new Schema(
   {
     account: { type: String, ref: 'Account' },
-    id: { type: String, default: '' },
+    projectName: { type: String, default: '' },
     title: { type: String, default: '' },
-    description: {type: String, default: ''},
+    description: { type: String, default: '' },
   },
   {
     timestamps: true,
@@ -14,6 +14,6 @@ const schema = new Schema(
   }
 )
 
-schema.index({ account: 1, id: 1, name: 1 })
+schema.index({ account: 1, projectName: 1, title: 1, description: 1 })
 
 module.exports = mongoose.model('Task', schema)

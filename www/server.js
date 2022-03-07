@@ -38,7 +38,7 @@ const $ = handler => async (req, res) => {
 }
 
 const { User } = require('./models')
-const { users, projects } = require('./routes')
+const { users, projects, tasks } = require('./routes')
 
 const passport = require('passport')
 const BearerStrategy = require('passport-http-bearer')
@@ -51,17 +51,30 @@ passport.use(
   })
 )
 
+const userAuthenticate = passport.authenticate('user', { session: false })
+
 app.use('/api/login', express.Router().post('/', $(users.login)))
 app.use('/api/signup', express.Router().post('/', $(users.signup)))
 app.use('/api/resetPassword', express.Router().post('/', $(users.resetPassword)))
 app.use(
   '/api/projects',
+  userAuthenticate,
   express
     .Router()
     .get('/', $(projects.getAll))
     .post('/', $(projects.create))
     .put('/:id', $(projects.update))
     .delete('/:id', $(projects.remove))
+)
+app.use(
+  '/api/tasks',
+  userAuthenticate,
+  express
+    .Router()
+    .get('/', $(tasks.getAll))
+    .post('/', $(tasks.create))
+  // .put('/:id', $(tasks.update))
+  // .delete('/:id', $(tasks.remove))
 )
 
 app.use(express.static(__dirname + '/public'))

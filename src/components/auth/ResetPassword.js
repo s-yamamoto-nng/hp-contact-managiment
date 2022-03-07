@@ -14,7 +14,7 @@ import Grid from '@mui/material/Grid'
 import PasswordIcon from '@mui/icons-material/Password'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { fetchAsyncReset } from 'modules/authSlice'
+import { resetPassword } from 'modules/authSlice'
 
 const schema = yup.object({
   email: yup
@@ -46,7 +46,7 @@ const ResetPassword = () => {
       email: data.email,
       password: data.password,
     }
-    dispatch(fetchAsyncReset(model))
+    dispatch(resetPassword(model))
       .then(() => setReset(true))
       .finally(() => {
         setIsSubmitting(false)

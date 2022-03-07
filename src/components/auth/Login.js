@@ -14,7 +14,7 @@ import Grid from '@mui/material/Grid'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { fetchAsyncLogin } from 'modules/authSlice'
+import { loginUser } from 'modules/authSlice'
 
 const schema = yup.object({
   email: yup
@@ -44,7 +44,7 @@ const Login = () => {
       email: data.email,
       password: data.password,
     }
-    dispatch(fetchAsyncLogin(model)).finally(() => {
+    dispatch(loginUser(model)).finally(() => {
       setIsSubmitting(false)
       history.push('/')
     })

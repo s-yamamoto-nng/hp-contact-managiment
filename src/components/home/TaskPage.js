@@ -1,89 +1,102 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Toolbar, Divider, IconButton, Container, Paper } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import Select from 'react-select'
+import { Fab, Container, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useForm, Controller } from 'react-hook-form'
+import AddIcon from '@mui/icons-material/Add'
+import { createTask, updateTask, loadTasks } from 'modules/taskSlice'
+import { loadProjects } from 'modules/projectSlice'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
-export default function TaskPage() {
+// const schema = yup.object().shape({
+//   projectName: yup.string().required('タスク名、タスク内容は必須です。'),
+//   title: yup.string().required('タスク名、タスク内容は必須です。'),
+//   description: yup.string().required('タスク名、タスク内容は必須です。'),
+// })
+
+export default function ProjectPage() {
   const dispatch = useDispatch()
-  const hospimaState = [
-    {
-      title: 'hospima',
-      description: 'texttexttext',
-      isComplete: false,
-    },
-  ]
+  const projects = useSelector(state => state.project.list)
+  const [open, setOpen] = useState(false)
+  const [selected, setSelected] = useState(null)
+  const { control, handleSubmit, reset } = useForm({
+    mode: 'onChange',
+    // resolver: yupResolver(schema),
+  })
 
-  const adjState = [
-    {
-      title: 'adj',
-      description: 'texttexttext',
-      isComplete: false,
-    },
-  ]
+  useEffect(() => {
+    // dispatch(fetchAsyncLoadProject())
+    dispatch(loadProjects())
+  }, [])
 
-  const nngState = [
-    {
-      title: 'nng',
-      description: 'texttexttext',
-      isComplete: false,
-    },
-  ]
-
-  const kdcState = [
-    {
-      title: 'kdc',
-      description: 'texttexttext',
-      isComplete: false,
-    },
-  ]
-
-  const [hospimaTodos, setHospimaTodos] = useState(hospimaState)
-  const [adjTodos, setAdjTodos] = useState(adjState)
-  const [nngTodos, setNngTodos] = useState(nngState)
-  const [kdcTodos, setKdcTodos] = useState(kdcState)
-  const [hospimaTask, setHospimaTask] = useState('')
-  const [adjTask, setAdjTask] = useState('')
-  const [nngTask, setNngTask] = useState('')
-  const [kdcTask, setKdcTask] = useState('')
-
+  const onSubmit = data => {
+    dispatch(
+      createTask({ projectName: data.projectName.label, title: data.title, description: data.description })
+    ).then(() => setOpen(false))
+  }
+  const handleNew = e => {
+    reset({ projectName: '', title: '', description: '' })
+    setSelected(null)
+    setOpen(true)
+  }
+  const handleClose = () => {
+    setOpen(false)
+  }
   return (
-    <Box
-      component="main"
-      sx={{
-        backgroundColor: theme => (theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900]),
-        flexGrow: 1,
-        height: '100vh',
-        overflow: 'auto',
-      }}
-    >
-      <Toolbar />
-      <Container maxWidth="md" sx={{ mt: 6, mb: 4 }}>
-        <Paper
-          sx={{
-            p: 2,
-            height: 400,
-            margin: 5,
-            position: 'relative',
-            justifyContent: 'center',
-          }}
-        >
-          <div style={{ textAlign: 'center', fontSize: 24 }}>title</div>
-          <Divider />
-          <div style={{ textAlign: 'center', fontSize: 24 }}>description</div>
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '0',
-              width: '96%',
-              textAlign: 'center',
-            }}
-          >
-            <IconButton>
-              <DeleteIcon />
-            </IconButton>
-          </div>
-        </Paper>
-      </Container>
-    </Box>
+    <Container maxWidth="lg">
+      <Dialog fullWidth open={open} onClose={handleClose}>
+        <DialogTitle>{selected ? 'タスク更新' : 'タスク登録'}</DialogTitle>
+        <form style={{ width: '100%' }} onSubmit={handleSubmit(onSubmit)}>
+          <DialogContent>
+            <Controller
+              name="projectName"
+              control={control}
+              render={({ field }) => (
+                //selectの指定に問題あり
+                <Select
+                  {...field}
+                  defaultValue={{ label: 'プロジェクトの選択' }}
+                  options={projects.map(project => {
+                    return { value: project._id, label: project.name }
+                  })}
+                />
+              )}
+            />
+            <Controller
+              name="title"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField {...field} required margin="dense" style={{ width: '100%' }} label="タイトル" />
+              )}
+            />
+            <Controller
+              name="description"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  required
+                  margin="dense"
+                  style={{ width: '100%' }}
+                  label="タスク内容"
+                  multiline
+                  rows={10}
+                />
+              )}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>キャンセル</Button>
+            <Button type="submit">{selected ? '更新' : '登録'}</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+      <Fab color="primary" style={{ position: 'fixed', right: 32, bottom: 32 }} onClick={() => handleNew()}>
+        <AddIcon />
+      </Fab>
+    </Container>
   )
 }

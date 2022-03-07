@@ -124,7 +124,7 @@ const Register = () => {
             size="large"
             sx={{ mt: 3, mb: 2 }}
           >
-            新規登録
+            ユーザー申請
           </Button>
           {error && <Alert severity="error">{error}</Alert>}
           {account && !error && <Alert severity="success">アカウントを作成しました</Alert>}
@@ -136,16 +136,7 @@ const Register = () => {
           }}
         >
           <Grid container>
-            <Grid item xs>
-              <Link
-                onClick={() => {
-                  history.push('/request')
-                }}
-                variant="body2"
-              >
-                ユーザー申請はこちら
-              </Link>
-            </Grid>
+            <Grid item xs></Grid>
             <Grid item>
               <Link
                 onClick={() => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import dayjs from 'dayjs'
 import Select from 'react-select'
 import {
   Fab,
@@ -20,11 +21,22 @@ import {
   Checkbox,
 } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
+import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { fetchAsyncCreate, fetchAsyncDelete, fetchAsyncEdit, fetchAsyncLoadProject } from '../../modules/projectSlice'
+import EditIcon from '@mui/icons-material/Edit'
+// import { fetchAsyncCreate, fetchAsyncDelete, fetchAsyncEdit, fetchAsyncLoadProject } from '../../modules/projectSlice'
+import {
+  createProject,
+  updateProject,
+  removeProject,
+  loadProjects,
+  // fetchAsyncCreate,
+  // fetchAsyncLoadProject,
+} from 'modules/projectSlice'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import task from '../../../www/models/task'
 
 const schema = yup.object().shape({
   name: yup.string().required('プロジェクト名は必須です。'),
@@ -33,8 +45,12 @@ const schema = yup.object().shape({
 export default function ProjectPage() {
   const dispatch = useDispatch()
   const projects = useSelector(state => state.project.list)
+  const tasks = useSelector(state => state.task.list)
+  const user = useSelector(state => state.auth.user)
+  // const task = useSelector(state => state.tasks.list)
   const [open, setOpen] = useState(false)
   const [confirmDeletion, setConfirmDeletion] = useState(null)
+  // const [project, setProject] = useState(null)
   const [selected, setSelected] = useState(null)
   const { control, handleSubmit, reset } = useForm({
     mode: 'onChange',
@@ -42,25 +58,15 @@ export default function ProjectPage() {
   })
 
   useEffect(() => {
-    dispatch(fetchAsyncLoadProject())
+    // dispatch(fetchAsyncLoadProject())
+    dispatch(loadProjects())
   }, [])
 
-  // const onSubmit = data => {
-  //   if (selected) {
-  //     console.log('true')
-  //     dispatch(fetchAsyncEdit({ ...selected, name: data.name, id: data.id })).then(() => setOpen(false))
-  //   } else {
-  //     console.log('false')
-  //     dispatch(fetchAsyncCreate({ name: data.name, id: data.id })).then(() => setOpen(false))
-  //   }
-  // }
   const onSubmit = data => {
     if (selected) {
-      console.log('true')
-      dispatch(fetchAsyncEdit({ ...selected, name: data.name })).then(() => setOpen(false))
+      dispatch(updateProject({ ...selected, name: data.name })).then(() => setOpen(false))
     } else {
-      console.log('false')
-      dispatch(fetchAsyncCreate({ name: data.name })).then(() => setOpen(false))
+      dispatch(createProject({ name: data.name })).then(() => setOpen(false))
     }
   }
   const handleEdit = e => {
@@ -68,6 +74,11 @@ export default function ProjectPage() {
     setSelected(e)
     setOpen(true)
   }
+
+  // const handleChangeProject = data => {
+  //   setProject(data)
+  // }
+
   const handleNew = e => {
     reset({ name: '' })
     setSelected(null)
@@ -80,7 +91,7 @@ export default function ProjectPage() {
     setOpen(false)
   }
   const handleDelete = () => {
-    dispatch(fetchAsyncDelete(confirmDeletion)).then(() => setConfirmDeletion(null))
+    dispatch(removeProject(confirmDeletion)).then(() => setConfirmDeletion(null))
   }
   return (
     <Container maxWidth="lg">
@@ -90,29 +101,16 @@ export default function ProjectPage() {
             name="project"
             control={control}
             render={({ field }) => (
-              // <Select
-              //   {...field}
-              //   defaultValue={{ label: 'プロジェクトの選択' }}
-              //   options={[
-              //     { value: 'nngHp', label: 'NNG HP' },
-              //     { value: 'hospimaHp', label: 'HOSPIMA HP' },
-              //     { value: 'adjHp', label: 'ADJ HP' },
-              //     { value: 'adjSalon', label: 'ADJ SALON' },
-              //     { value: 'kdchp', label: 'KDC HP' },
-              //   ]}
-              // />
               <Select
                 {...field}
                 defaultValue={{ label: 'プロジェクトの選択' }}
+                // onChange={e => }
                 options={projects.map(project => {
-                  return { value: project.id, label: project.name }
+                  return { value: project._id, label: project.name }
                 })}
               />
             )}
           />
-          <Button type="submit" variant="contained" style={{ marginLeft: 10 }}>
-            表示
-          </Button>
         </div>
       </Paper>
       {projects.length === 0 && (
@@ -122,14 +120,38 @@ export default function ProjectPage() {
           </ListItem>
         </Paper>
       )}
-      {/* <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>タスクタイトル</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>タスクの内容</Typography>
-        </AccordionDetails>
-      </Accordion> */}
+      <Paper style={{ marginTop: 30, padding: 20 }}>
+        {tasks.map(task => {
+          return (
+            <>
+              <div key={`project_${task._id}`} style={{ display: 'flex', marginTop: 30 }}>
+                {/* <Checkbox /> */}
+                <Accordion style={{ width: '100%' }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography style={{ width: '29%' }}>{project.name}</Typography>
+                    <Typography style={{ width: '25%', whiteSpace: 'nowrap' }}>
+                      登録日：{dayjs(project.createdAt).format('YYYY年MM月DD日')}
+                    </Typography>
+                    <Typography style={{ width: '25%', whiteSpace: 'nowrap' }}>
+                      更新日：{dayjs(project.updatedAt).format('YYYY年MM月DD日')}
+                    </Typography>
+                    <Typography style={{ width: '21%', whiteSpace: 'nowrap' }}>登録者：{user.account}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>タスクの内容</Typography>
+                  </AccordionDetails>
+                </Accordion>
+                <Button>
+                  <EditIcon onClick={() => handleEdit(project)} />
+                </Button>
+                <Button onClick={() => setConfirmDeletion(project)}>
+                  <DeleteIcon />
+                </Button>
+              </div>
+            </>
+          )
+        })}
+      </Paper>
       <Dialog open={Boolean(confirmDeletion)} onClose={handleConfirmClose}>
         <DialogTitle>本当に削除しますか？</DialogTitle>
         <DialogActions>

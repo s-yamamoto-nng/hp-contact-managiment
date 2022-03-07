@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { HashRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 
-import { fetchAsyncLogin } from 'modules/authSlice'
+import { loginUser } from 'modules/authSlice'
 import Login from './auth/Login'
 import Register from './auth/Register'
 import ResetPassword from './auth/ResetPassword'
 import AppRoute from './home/Layout'
+import userRequest from './auth/userRequest'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -16,7 +17,7 @@ const App = () => {
   useEffect(() => {
     const token = localStorage.token
     if (token) {
-      dispatch(fetchAsyncLogin({ token })).then(() => {
+      dispatch(loginUser({ token })).then(() => {
         setLogin(true)
       })
     } else {
@@ -38,6 +39,7 @@ const App = () => {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/resetPassword" component={ResetPassword} />
+        <Route exact path="/request" component={userRequest} />
         <PrivateRoute path="/" component={AppRoute} />
       </Switch>
     </Router>
