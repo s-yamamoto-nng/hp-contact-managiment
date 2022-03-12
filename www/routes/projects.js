@@ -27,8 +27,9 @@ async function update(req) {
 }
 
 async function getAll(req) {
-  const account = req.user.account
-  return await Project.find({ account })
+  // const account = req.user.account
+  // return await Project.find({ account })
+  return await Project.find()
 }
 
 async function create(req) {

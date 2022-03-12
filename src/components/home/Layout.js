@@ -20,11 +20,14 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import ProjectPage from './ProjectPage'
 import TaskPage from './TaskPage'
-import ListAltIcon from '@mui/icons-material/ListAlt'
 import GroupIcon from '@mui/icons-material/Group'
-import TaskIcon from '@mui/icons-material/Task'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { logout } from '../../modules/authSlice'
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
+import AddTaskIcon from '@mui/icons-material/AddTask'
+import TaskIcon from '@mui/icons-material/Task'
+import ProjectListPage from './ProjectListPage'
+import UserRequestListPage from './UserRequestListPage'
 
 const drawerWidth = 240
 
@@ -71,7 +74,7 @@ const AppBar = styled(MuiAppBar, {
 }))
 
 export default function Layout() {
-  const user = useSelector(state => state.auth.user)
+  const users = useSelector(state => state.auth.user)
   const dispatch = useDispatch()
   const history = useHistory()
 
@@ -111,9 +114,9 @@ export default function Layout() {
           </Typography>
           <PersonOutlineIcon sx={{ marginRight: 0.8, marginTop: 0.5 }} />
           <Typography component="h1" variant="h6" color="inherit" sx={{ marginRight: 1 }}>
-            {user.account}さん
+            {users.account}さん
           </Typography>
-          {user && (
+          {users && (
             <Button color="inherit" onClick={() => handleLogout()}>
               ログアウト
             </Button>
@@ -137,22 +140,33 @@ export default function Layout() {
         <List>
           <ListItem button component={Link} to="/project">
             <ListItemIcon>
-              <GroupIcon />
-            </ListItemIcon>
-            <ListItemText primary="プロジェクト選択" />
-          </ListItem>
-          {/* <ListItem button component={Link} to="/inquiry">
-            <ListItemIcon>
               <TaskIcon />
             </ListItemIcon>
-            <ListItemText primary="お問い合わせ一覧" />
-          </ListItem> */}
+            <ListItemText primary="タスク一覧" />
+          </ListItem>
           <ListItem button component={Link} to="/task">
             <ListItemIcon>
-              <ListAltIcon />
+              <AddTaskIcon />
             </ListItemIcon>
             <ListItemText primary="タスク登録" />
           </ListItem>
+          {users.account === 's.yamamoto' && (
+            <div>
+              <Divider />
+              <ListItem button component={Link} to="/projectList">
+                <ListItemIcon>
+                  <GroupIcon />
+                </ListItemIcon>
+                <ListItemText primary="プロジェクト一覧" />
+              </ListItem>
+              <ListItem button component={Link} to="/userRequestList">
+                <ListItemIcon>
+                  <PersonAddIcon />
+                </ListItemIcon>
+                <ListItemText primary="ユーザー申請一覧" />
+              </ListItem>
+            </div>
+          )}
         </List>
       </Drawer>
       <Box
@@ -170,6 +184,8 @@ export default function Layout() {
           <Switch>
             <Route path="/project" component={ProjectPage} />
             <Route path="/task" component={TaskPage} />
+            <Route path="/projectList" component={ProjectListPage} />
+            <Route path="/userRequestList" component={UserRequestListPage} />
           </Switch>
         </Container>
       </Box>

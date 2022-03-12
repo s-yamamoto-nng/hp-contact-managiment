@@ -1,90 +1,18 @@
-// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-// import { client } from 'utils'
-// import io from 'socket.io-client'
-// import { swapProject } from './projectSlice'
-
-// export const fetchAsyncLogin = createAsyncThunk('login/post', async auth => {
-//   const res = await client.post('/api/login', auth)
-//   return res.data
-// })
-
-// export const fetchAsyncRegister = createAsyncThunk('signup/post', async auth => {
-//   const res = await client.post('/api/signup', auth)
-//   return res.data
-// })
-
-// export const fetchAsyncReset = createAsyncThunk('resetPassword/post', async auth => {
-//   const res = await client.post('/api/resetPassword', auth)
-//   return res.data
-// })
-
-// export const fetchAsyncLogout = createAsyncThunk('logout', async (_, thunkAPI) => {
-//   thunkAPI.dispatch(logout())
-//   window.localStorage.setItem('logout', Date.now())
-// })
-
-// export const authSlice = createSlice({
-//   name: 'auth',
-//   initialState: {
-//     user: undefined,
-//     error: null,
-//   },
-//   reducers: {
-//     logout(state, action) {
-//       delete localStorage.token
-//       state.user = undefined
-//     },
-//   },
-
-//   extraReducers: builder => {
-//     builder.addCase(fetchAsyncReset.rejected, (state, action) => {
-//       state.error = 'パスワードを変更できませんでした'
-//     })
-//     builder.addCase(fetchAsyncLogin.fulfilled, (state, action) => {
-//       const socket = io({
-//         transports: ['websocket'],
-//         query: {
-//           id: action.payload.user._id,
-//           token: action.payload.token,
-//           accountName: action.payload.user.account,
-//           client: 'web',
-//         },
-//       })
-//       socket.on('project:update', e => dispatch(swapProject(e, 'update')))
-//       socket.on('project:remove', e => dispatch(swapProject(e, 'remove')))
-//       localStorage.token = action.payload.user.token
-//       state.user = action.payload.user
-//       state.error = action.payload.error
-//     })
-//     builder.addCase(fetchAsyncLogin.rejected, (state, action) => {
-//       state.user = undefined
-//       state.token = undefined
-//       state.error = 'ログインできませんでした'
-//     })
-//     builder.addCase(fetchAsyncRegister.fulfilled, (state, action) => {
-//       localStorage.token = action.payload.user.token
-//       state.user = action.payload.user
-//       state.error = action.payload.error
-//     })
-//     builder.addCase(fetchAsyncRegister.rejected, (state, action) => {
-//       state.error = '新規登録に失敗しました。もう一度入力し直してください。'
-//     })
-//   },
-// })
-
-// export const { logout } = authSlice.actions
-// export default authSlice.reducer
-
 import { createSlice } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
 import { client } from 'utils'
 import { swapProject } from './projectSlice'
+import { swapTask } from './taskSlice'
+
+const CancelToken = client.CancelToken
+let cancel
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: undefined,
     error: null,
+    users: [],
   },
   reducers: {
     login: (state, action) => {
@@ -95,9 +23,14 @@ export const authSlice = createSlice({
     logout: state => {
       delete localStorage.token
       state.user = undefined
+      state.error = undefined
     },
     error: (state, action) => {
       state.error = action.payload
+    },
+    swap: (state, action) => {
+      state.users = action.payload
+      state.error = undefined
     },
   },
 })
@@ -110,6 +43,34 @@ export const resetPassword = model => {
       .catch(() => {
         dispatch(error('パスワードを変更出来ませんでした'))
       })
+  }
+}
+
+export const userRequest = model => {
+  return dispatch => {
+    return client
+      .post(`/api/userRequest/${model._id}`, model)
+      .then(res => res.data)
+      .catch(() => {
+        dispatch(error('ユーザー申請許可に失敗しました'))
+      })
+  }
+}
+
+export const userApproval = model => {
+  return dispatch => {
+    return client
+      .post('/api/userApproval', model)
+      .then(res => res.data)
+      .catch(() => {
+        dispatch(error('ユーザー申請に失敗しました'))
+      })
+  }
+}
+
+export const removeUser = model => {
+  return dispatch => {
+    return client.delete(`/api/removeUser/${model._id}`).then(res => res.data)
   }
 }
 
@@ -129,12 +90,55 @@ export const loginUser = model => {
         })
         socket.on('project:update', e => dispatch(swapProject(e, 'update')))
         socket.on('project:remove', e => dispatch(swapProject(e, 'remove')))
+        socket.on('task:update', e => dispatch(swapTask(e, 'update')))
+        socket.on('task:remove', e => dispatch(swapTask(e, 'remove')))
+        socket.on('user:update', e => dispatch(swapUser(e, 'update')))
+        socket.on('user:remove', e => dispatch(swapUser(e, 'remove')))
+        socket.on('account:update', e => dispatch(swapUser(e, 'update')))
+        socket.on('account:remove', e => dispatch(swapUser(e, 'remove')))
         dispatch(login({ user: res.data.user, error: null }))
       })
       .catch(() => {
         dispatch(logout())
-        dispatch(error('ログインできませんでした'))
+        dispatch(error('ログイン情報に誤りがあるか、ユーザー申請が通過しておりません。'))
       })
+  }
+}
+
+export function loadUsers() {
+  return dispatch => {
+    return client
+      .get('/api/users', {
+        cancelToken: new CancelToken(c => {
+          cancel = c
+        }),
+      })
+      .then(res => {
+        dispatch(swap(res.data))
+      })
+      .catch(error => {
+        if (client.isCancel(error)) {
+          dispatch(setError('読み込みをキャンセルしました'))
+        }
+      })
+  }
+}
+
+export function swapUser(target, method) {
+  return (dispatch, getState) => {
+    const user = getState().auth.users
+    switch (method) {
+      case 'update': {
+        dispatch(swap([...user.filter(e => e._id !== target._id), target]))
+        return
+      }
+      case 'remove': {
+        dispatch(swap(user.filter(e => e._id !== target._id || e.type !== target.type)))
+        return
+      }
+      default:
+        return
+    }
   }
 }
 
@@ -158,5 +162,5 @@ export const logoutUser = () => {
   }
 }
 
-export const { login, logout, error } = authSlice.actions
+export const { login, logout, error, swap } = authSlice.actions
 export default authSlice.reducer

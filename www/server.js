@@ -56,6 +56,10 @@ const userAuthenticate = passport.authenticate('user', { session: false })
 app.use('/api/login', express.Router().post('/', $(users.login)))
 app.use('/api/signup', express.Router().post('/', $(users.signup)))
 app.use('/api/resetPassword', express.Router().post('/', $(users.resetPassword)))
+app.use('/api/userRequest', express.Router().post('/:id', $(users.userRequest)))
+app.use('/api/userApproval', express.Router().post('/', $(users.userApproval)))
+app.use('/api/users', express.Router().get('/', $(users.getAll)))
+app.use('/api/removeUser', userAuthenticate, express.Router().delete('/:id', $(users.removeUser)))
 app.use(
   '/api/projects',
   userAuthenticate,
@@ -73,8 +77,8 @@ app.use(
     .Router()
     .get('/', $(tasks.getAll))
     .post('/', $(tasks.create))
-  // .put('/:id', $(tasks.update))
-  // .delete('/:id', $(tasks.remove))
+    .put('/:id', $(tasks.update))
+    .delete('/:id', $(tasks.remove))
 )
 
 app.use(express.static(__dirname + '/public'))

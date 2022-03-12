@@ -7,7 +7,7 @@ import Login from './auth/Login'
 import Register from './auth/Register'
 import ResetPassword from './auth/ResetPassword'
 import AppRoute from './home/Layout'
-import userRequest from './auth/userRequest'
+import UserRequest from './auth/userRequest'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -39,7 +39,7 @@ const App = () => {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/resetPassword" component={ResetPassword} />
-        <Route exact path="/request" component={userRequest} />
+        <Route exact path="/userRequest" component={UserRequest} />
         <PrivateRoute path="/" component={AppRoute} />
       </Switch>
     </Router>

@@ -139,7 +139,7 @@ const Register = () => {
             <Grid item xs>
               <Link
                 onClick={() => {
-                  history.push('/request')
+                  history.push('/userRequest')
                 }}
                 variant="body2"
               >

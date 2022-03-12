@@ -10,6 +10,7 @@ const schema = new Schema(
     email: { type: String, validate: { validator: e => e === '' || validator.isEmail(e) } },
     token: { type: String },
     password: { type: String },
+    userRequest: { type: Boolean, default: null },
   },
   {
     timestamps: true,

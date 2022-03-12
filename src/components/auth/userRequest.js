@@ -14,7 +14,7 @@ import Container from '@mui/material/Container'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { createUser } from 'modules/authSlice'
+import { userApproval } from 'modules/authSlice'
 
 const schema = yup.object({
   email: yup
@@ -31,7 +31,7 @@ const schema = yup.object({
     ),
 })
 
-const Register = () => {
+const UserRequest = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const error = useSelector(state => state.auth.error)
@@ -54,7 +54,7 @@ const Register = () => {
       password: data.password,
       accountName: data.accountName,
     }
-    dispatch(createUser(model))
+    dispatch(userApproval(model))
       .then(() => setAccount(true))
       .finally(() => {
         setIsSubmitting(false)
@@ -127,7 +127,9 @@ const Register = () => {
             ユーザー申請
           </Button>
           {error && <Alert severity="error">{error}</Alert>}
-          {account && !error && <Alert severity="success">アカウントを作成しました</Alert>}
+          {account && !error && (
+            <Alert severity="success">ユーザー申請が完了しました。申請通過後ログイン可能になります。</Alert>
+          )}
         </Box>
         <Box
           sx={{
@@ -154,4 +156,4 @@ const Register = () => {
   )
 }
 
-export default Register
+export default UserRequest

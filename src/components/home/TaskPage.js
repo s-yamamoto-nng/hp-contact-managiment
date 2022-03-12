@@ -26,7 +26,7 @@ export default function ProjectPage() {
   })
 
   useEffect(() => {
-    // dispatch(fetchAsyncLoadProject())
+    dispatch(loadTasks())
     dispatch(loadProjects())
   }, [])
 
