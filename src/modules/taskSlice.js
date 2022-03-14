@@ -58,6 +58,12 @@ export function loadTasks() {
   }
 }
 
+export function readFlgTask(model) {
+  return dispatch => {
+    return client.post(`/api/readFlgTask/${model._id}`, model).then(res => res.data)
+  }
+}
+
 export const setError = message => {
   return dispatch => {
     dispatch(error(message))

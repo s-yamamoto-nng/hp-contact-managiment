@@ -8,6 +8,7 @@ module.exports = {
   create,
   update,
   remove,
+  readFlgTask,
 }
 
 async function remove(req) {
@@ -44,4 +45,11 @@ async function create(req) {
   const io = require('../utils/io').io()
   io.to(account).emit('task:update', task)
   return { message: 'success' }
+}
+
+async function readFlgTask(req) {
+  let task = await Task.findOne({ _id: req.params.id })
+  task.readFlg = true
+  await task.save()
+  return { success: true }
 }

@@ -80,6 +80,7 @@ app.use(
     .put('/:id', $(tasks.update))
     .delete('/:id', $(tasks.remove))
 )
+app.use('/api/readFlgTask', userAuthenticate, express.Router().post('/:id', $(tasks.readFlgTask)))
 
 app.use(express.static(__dirname + '/public'))
 

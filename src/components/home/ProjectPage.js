@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import Select from 'react-select'
 import {
-  // Fab,
   Container,
   Button,
   TextField,
@@ -18,14 +17,15 @@ import {
   ListItemText,
   Accordion,
   Typography,
+  Divider,
 } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
 import DeleteIcon from '@mui/icons-material/Delete'
-// import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import EditIcon from '@mui/icons-material/Edit'
 import { loadProjects } from 'modules/projectSlice'
-import { loadTasks, removeTask, updateTask } from 'modules/taskSlice'
+import { loadTasks, removeTask, updateTask, readFlgTask } from 'modules/taskSlice'
+import MarkChatReadIcon from '@mui/icons-material/MarkChatRead'
 // import { yupResolver } from '@hookform/resolvers/yup'
 // import * as yup from 'yup'
 
@@ -54,23 +54,13 @@ export default function ProjectPage() {
   }, [])
 
   const onSubmit = data => {
-    // if (selected) {
     dispatch(updateTask({ ...selected, title: data.title, description: data.description })).then(() => setOpen(false))
-    // } else {
-    //   dispatch(createProject({ name: data.name })).then(() => setOpen(false))
-    // }
   }
   const handleEdit = e => {
     reset({ title: e.title, description: e.description })
     setSelected(e)
     setOpen(true)
   }
-
-  // const handleNew = e => {
-  //   reset({ name: '' })
-  //   setSelected(null)
-  //   setOpen(true)
-  // }
   const handleConfirmClose = () => {
     setConfirmDeletion(null)
   }
@@ -82,6 +72,10 @@ export default function ProjectPage() {
   }
   const handleChangeProject = data => {
     setSelectProject(data.label)
+  }
+
+  const handleReadFlg = data => {
+    dispatch(readFlgTask(data)).then(() => dispatch(loadTasks()))
   }
   return (
     <Container maxWidth="lg">
@@ -130,6 +124,22 @@ export default function ProjectPage() {
                       <AccordionDetails>
                         <Typography>{task.description}</Typography>
                       </AccordionDetails>
+                      <Divider />
+                      <Button
+                        variant="contained"
+                        endIcon={<MarkChatReadIcon />}
+                        onClick={() => handleReadFlg(task)}
+                        style={{
+                          display: 'flex',
+                          margin: '0 auto',
+                          marginTop: 20,
+                          marginBottom: 20,
+                          background: '#3ea8ff',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {task.readFlg ? '既読' : '未読'}
+                      </Button>
                     </Accordion>
                     {task.account === users.account && (
                       <>
@@ -204,9 +214,6 @@ export default function ProjectPage() {
           </DialogActions>
         </form>
       </Dialog>
-      {/* <Fab color="primary" style={{ position: 'fixed', right: 32, bottom: 32 }} onClick={() => handleNew()}>
-        <AddIcon />
-      </Fab> */}
     </Container>
   )
 }

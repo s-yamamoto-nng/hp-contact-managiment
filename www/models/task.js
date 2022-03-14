@@ -7,6 +7,7 @@ const schema = new Schema(
     projectName: { type: String, default: '' },
     title: { type: String, default: '' },
     description: { type: String, default: '' },
+    readFlg: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Select from 'react-select'
-import { Fab, Container, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import {
+  Fab,
+  Container,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
 import AddIcon from '@mui/icons-material/Add'
 import { createTask, updateTask, loadTasks } from 'modules/taskSlice'
@@ -20,6 +30,7 @@ export default function ProjectPage() {
   const projects = useSelector(state => state.project.list)
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState(null)
+
   const { control, handleSubmit, reset } = useForm({
     mode: 'onChange',
     // resolver: yupResolver(schema),
@@ -43,6 +54,7 @@ export default function ProjectPage() {
   const handleClose = () => {
     setOpen(false)
   }
+
   return (
     <Container maxWidth="lg">
       <Dialog fullWidth open={open} onClose={handleClose}>

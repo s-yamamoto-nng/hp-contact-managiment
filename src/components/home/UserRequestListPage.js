@@ -46,6 +46,7 @@ export default function UserRequestListPage() {
   const [open, setOpen] = useState(false)
   const [confirmDeletion, setConfirmDeletion] = useState(null)
   const [confirmPermit, setConfirmPermit] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState(null)
   const { control, handleSubmit, reset } = useForm({
     mode: 'onChange',
@@ -75,30 +76,38 @@ export default function UserRequestListPage() {
   }
 
   const handleDelete = () => {
-    dispatch(removeUser(confirmDeletion)).then(() => setConfirmDeletion(null))
+    dispatch(removeUser(confirmDeletion)).then(() => {
+      setConfirmDeletion(null)
+      dispatch(loadUsers())
+    })
   }
 
   const handlePermit = () => {
-    dispatch(userRequest(confirmPermit)).then(() => setConfirmPermit(null))
+    dispatch(userRequest(confirmPermit)).then(() => {
+      setConfirmPermit(null)
+      dispatch(loadUsers())
+    })
   }
 
   useEffect(() => {
-    //loadingを入れる
-    dispatch(loadUsers())
+    setLoading(true)
+    dispatch(loadUsers()).then(() => setLoading(false))
   }, [])
 
   return (
     <Container maxWidth="lg">
-      <div
-        style={{
-          display: 'flex',
-          transform: 'scale(2)',
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}
-      >
-        <CircularProgress size={24} />
-      </div>
+      {loading && (
+        <div
+          style={{
+            display: 'flex',
+            transform: 'scale(2)',
+            justifyContent: 'center',
+            alignContent: 'center',
+          }}
+        >
+          <CircularProgress size={24} />
+        </div>
+      )}
       <Paper>
         <List>
           {users.length === 0 && (
@@ -116,9 +125,14 @@ export default function UserRequestListPage() {
                 </ListItemAvatar>
                 <ListItemText primary={user.account} secondary={user._id} />
                 {user.userRequest === true ? (
-                  <ListItem style={{ textAlign: 'right' }}>
-                    <ListItemText primary={'申請完了済'} />
-                  </ListItem>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <ListItem style={{ textAlign: 'right' }}>
+                      <ListItemText primary={'申請完了済'} />
+                    </ListItem>
+                    <Button onClick={() => setConfirmDeletion(user)}>
+                      <DeleteIcon />
+                    </Button>
+                  </div>
                 ) : user.userRequest === false ? (
                   <div>
                     <Button

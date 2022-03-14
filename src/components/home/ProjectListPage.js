@@ -46,14 +46,15 @@ export default function ProjectListPage() {
   const [open, setOpen] = useState(false)
   const [confirmDeletion, setConfirmDeletion] = useState(null)
   const [selected, setSelected] = useState(null)
-  const [loading, setLoading] = useState(null)
+  const [loading, setLoading] = useState(false)
   const { control, handleSubmit, reset } = useForm({
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
 
   useEffect(() => {
-    dispatch(loadProjects())
+    setLoading(true)
+    dispatch(loadProjects()).then(() => setLoading(false))
   }, [])
 
   const onSubmit = data => {
@@ -86,16 +87,18 @@ export default function ProjectListPage() {
 
   return (
     <Container maxWidth="lg">
-      <div
-        style={{
-          display: 'flex',
-          transform: 'scale(2)',
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}
-      >
-        <CircularProgress size={24} />
-      </div>
+      {loading && (
+        <div
+          style={{
+            display: 'flex',
+            transform: 'scale(2)',
+            justifyContent: 'center',
+            alignContent: 'center',
+          }}
+        >
+          <CircularProgress size={24} />
+        </div>
+      )}
       <Paper>
         <List>
           {projects.length === 0 && (
