@@ -5,6 +5,7 @@ const schema = new Schema(
   {
     account: { type: String, ref: 'Account' },
     name: { type: String, default: '' },
+    deleteFlg: { type: Boolean, default: false },
   },
   {
     timestamps: true,

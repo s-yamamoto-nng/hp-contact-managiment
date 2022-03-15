@@ -7,11 +7,11 @@ module.exports = { getAll, create, update, remove }
 
 async function remove(req) {
   const account = req.user.account
-  let project = await Project.findOne({ _id: req.params.id, account })
+  let project = await Project.findOneAndUpdate({ _id: req.params.id, account }, { deleteFlg: true }, { new: true })
   if (!project) throw createError(404)
   const io = require('../utils/io').io()
   io.to(account).emit('project:remove', project)
-  return await project.remove()
+  return await project
 }
 
 async function update(req) {

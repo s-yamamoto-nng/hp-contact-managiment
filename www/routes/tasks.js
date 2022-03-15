@@ -13,11 +13,19 @@ module.exports = {
 
 async function remove(req) {
   const account = req.user.account
-  let task = await Task.findOne({ _id: req.params.id, account })
+  // let task = await Task.findOne({ _id: req.params.id, account })
+  let task = await Task.findOneAndUpdate(
+    { _id: req.params.id, account },
+    { deleteFlg: true },
+    {
+      new: true,
+    }
+  )
   if (!task) throw createError(404)
   const io = require('../utils/io').io()
   io.to(account).emit('task:remove', task)
-  return await task.remove()
+
+  return await task
 }
 
 async function update(req) {

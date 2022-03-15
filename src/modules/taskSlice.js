@@ -23,7 +23,7 @@ export const taskSlice = createSlice({
 
 export function removeTask(model) {
   return dispatch => {
-    return client.delete(`/api/tasks/${model._id}`).then(res => res.data)
+    return client.put(`/api/removeTasks/${model._id}`).then(res => res.data)
   }
 }
 

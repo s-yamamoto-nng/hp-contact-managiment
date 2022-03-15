@@ -59,7 +59,8 @@ app.use('/api/resetPassword', express.Router().post('/', $(users.resetPassword))
 app.use('/api/userRequest', express.Router().post('/:id', $(users.userRequest)))
 app.use('/api/userApproval', express.Router().post('/', $(users.userApproval)))
 app.use('/api/users', express.Router().get('/', $(users.getAll)))
-app.use('/api/removeUser', userAuthenticate, express.Router().delete('/:id', $(users.removeUser)))
+app.use('/api/removeUsers', userAuthenticate, express.Router().put('/:id', $(users.remove)))
+
 app.use(
   '/api/projects',
   userAuthenticate,
@@ -68,8 +69,9 @@ app.use(
     .get('/', $(projects.getAll))
     .post('/', $(projects.create))
     .put('/:id', $(projects.update))
-    .delete('/:id', $(projects.remove))
 )
+app.use('/api/removeProjects', userAuthenticate, express.Router().put('/:id', $(projects.remove)))
+
 app.use(
   '/api/tasks',
   userAuthenticate,
@@ -78,8 +80,9 @@ app.use(
     .get('/', $(tasks.getAll))
     .post('/', $(tasks.create))
     .put('/:id', $(tasks.update))
-    .delete('/:id', $(tasks.remove))
 )
+app.use('/api/removeTasks', userAuthenticate, express.Router().put('/:id', $(tasks.remove)))
+
 app.use('/api/readFlgTask', userAuthenticate, express.Router().post('/:id', $(tasks.readFlgTask)))
 
 app.use(express.static(__dirname + '/public'))

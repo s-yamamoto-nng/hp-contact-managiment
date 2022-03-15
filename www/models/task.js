@@ -8,6 +8,7 @@ const schema = new Schema(
     title: { type: String, default: '' },
     description: { type: String, default: '' },
     readFlg: { type: Boolean, default: false },
+    deleteFlg: { type: Boolean, defaul: false },
   },
   {
     timestamps: true,

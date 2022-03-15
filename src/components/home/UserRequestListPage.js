@@ -76,10 +76,15 @@ export default function UserRequestListPage() {
   }
 
   const handleDelete = () => {
-    dispatch(removeUser(confirmDeletion)).then(() => {
-      setConfirmDeletion(null)
-      dispatch(loadUsers())
-    })
+    dispatch(removeUser(confirmDeletion))
+      .then(() => {
+        setConfirmDeletion(null)
+        dispatch(loadUsers())
+      })
+      .catch(err => {
+        console.log(confirmDeletion)
+        console.log(err)
+      })
   }
 
   const handlePermit = () => {

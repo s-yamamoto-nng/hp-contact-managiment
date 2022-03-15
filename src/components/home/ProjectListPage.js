@@ -59,9 +59,15 @@ export default function ProjectListPage() {
 
   const onSubmit = data => {
     if (selected) {
-      dispatch(updateProject({ ...selected, name: data.name })).then(() => setOpen(false))
+      dispatch(updateProject({ ...selected, name: data.name })).then(() => {
+        setOpen(false)
+        dispatch(loadProjects())
+      })
     } else {
-      dispatch(createProject({ name: data.name })).then(() => setOpen(false))
+      dispatch(createProject({ name: data.name })).then(() => {
+        setOpen(false)
+        dispatch(loadProjects())
+      })
     }
   }
   const handleEdit = e => {
@@ -108,24 +114,27 @@ export default function ProjectListPage() {
           )}
           {projects.map(project => {
             return (
-              <ListItem
-                key={`project_${project._id}`}
-                secondaryAction={
-                  <IconButton edge="end" onClick={() => setConfirmDeletion(project)}>
-                    <DeleteIcon />
-                  </IconButton>
-                }
-                disablePadding
-              >
-                <ListItemButton role={undefined} onClick={() => handleEdit(project)} dense>
-                  <ListItemAvatar>
-                    <ArticleIcon style={{ transform: 'scale(1.5)', marginTop: 5 }}>
-                      <PersonIcon />
-                    </ArticleIcon>
-                  </ListItemAvatar>
-                  <ListItemText primary={project.name} />
-                </ListItemButton>
-              </ListItem>
+              <div key={`project_${project._id}`}>
+                {project.deleteFlg !== true && (
+                  <ListItem
+                    secondaryAction={
+                      <IconButton edge="end" onClick={() => setConfirmDeletion(project)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    }
+                    disablePadding
+                  >
+                    <ListItemButton role={undefined} onClick={() => handleEdit(project)} dense>
+                      <ListItemAvatar>
+                        <ArticleIcon style={{ transform: 'scale(1.5)', marginTop: 5 }}>
+                          <PersonIcon />
+                        </ArticleIcon>
+                      </ListItemAvatar>
+                      <ListItemText primary={project.name} />
+                    </ListItemButton>
+                  </ListItem>
+                )}
+              </div>
             )
           })}
         </List>

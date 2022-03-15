@@ -23,7 +23,7 @@ export const projectSlice = createSlice({
 
 export function removeProject(model) {
   return dispatch => {
-    return client.delete(`/api/projects/${model._id}`).then(res => res.data)
+    return client.put(`/api/removeProjects/${model._id}`).then(res => res.data)
   }
 }
 

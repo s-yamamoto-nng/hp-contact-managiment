@@ -70,7 +70,7 @@ export const userApproval = model => {
 
 export const removeUser = model => {
   return dispatch => {
-    return client.delete(`/api/removeUser/${model._id}`).then(res => res.data)
+    return client.put(`/api/removeUsers/${model._id}`).then(res => res.data)
   }
 }
 

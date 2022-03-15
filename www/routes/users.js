@@ -10,7 +10,7 @@ module.exports = {
   getAll,
   userRequest,
   userApproval,
-  removeUser,
+  remove,
 }
 
 async function resetPassword(req) {
@@ -28,16 +28,20 @@ async function resetPassword(req) {
   return { success: true }
 }
 
-async function removeUser(req) {
-  let user = await User.findOne({ _id: req.params.id })
-  let account = await Account.findOne({ _id: user.account })
+async function remove(req) {
+  // let user = await User.findOne({ _id: req.params.id })
+  // let account = await Account.findOne({ _id: user.account })
+  let user = await User.findOneAndUpdate({ _id: req.params.id }, { deleteFlg: true }, { new: true })
+  let account = await Account.findOneAndUpdate({ _id: req.params.id }, { deleteFlg: true }, { new: true })
   if (!user) throw createError(404)
   if (!account) throw createError(404)
   const io = require('../utils/io').io()
   io.to(account).emit('user:remove', user)
   io.to(account).emit('account:remove', account)
-  await account.remove()
-  return await user.remove()
+  return await user
+  //account及びユーザーのdeleteFlgをtrueへ更新
+  // await account.remove()
+  // return await user.remove()
 }
 
 async function userRequest(req) {

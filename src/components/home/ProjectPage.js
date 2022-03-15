@@ -36,7 +36,6 @@ import MarkChatReadIcon from '@mui/icons-material/MarkChatRead'
 export default function ProjectPage() {
   const dispatch = useDispatch()
   const projects = useSelector(state => state.project.list)
-  console.log(projects)
   const tasks = useSelector(state => state.task.list)
   const users = useSelector(state => state.auth.user)
   const [open, setOpen] = useState(false)
@@ -104,59 +103,61 @@ export default function ProjectPage() {
           </ListItem>
         </Paper>
       ) : taskProjectNumber.length !== 0 && selectProject !== null ? (
-        <Paper style={{ marginTop: 30, padding: 20 }}>
+        <div>
           {tasks.map(task => {
             return (
-              <>
-                {task.projectName === selectProject && (
-                  <div key={`task_${task._id}`} style={{ display: 'flex', marginTop: 30 }}>
-                    <Accordion style={{ width: '100%' }}>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography style={{ width: '29%' }}>{task.title}</Typography>
-                        <Typography style={{ width: '25%', whiteSpace: 'nowrap' }}>
-                          登録日：{dayjs(task.createdAt).format('YYYY年MM月DD日')}
-                        </Typography>
-                        <Typography style={{ width: '25%', whiteSpace: 'nowrap' }}>
-                          更新日：{dayjs(task.updatedAt).format('YYYY年MM月DD日')}
-                        </Typography>
-                        <Typography style={{ width: '21%', whiteSpace: 'nowrap' }}>登録者：{task.account}</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Typography>{task.description}</Typography>
-                      </AccordionDetails>
-                      <Divider />
-                      <Button
-                        variant="contained"
-                        endIcon={<MarkChatReadIcon />}
-                        onClick={() => handleReadFlg(task)}
-                        style={{
-                          display: 'flex',
-                          margin: '0 auto',
-                          marginTop: 20,
-                          marginBottom: 20,
-                          background: '#3ea8ff',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {task.readFlg ? '既読' : '未読'}
-                      </Button>
-                    </Accordion>
-                    {task.account === users.account && (
-                      <>
-                        <Button>
-                          <EditIcon onClick={() => handleEdit(task)} />
+              <div key={`task_${task._id}`}>
+                {task.projectName === selectProject && task.deleteFlg !== true && (
+                  <Paper style={{ marginTop: 30, padding: 20 }}>
+                    <div style={{ display: 'flex', marginTop: 30 }}>
+                      <Accordion style={{ width: '100%' }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography style={{ width: '29%' }}>{task.title}</Typography>
+                          <Typography style={{ width: '25%', whiteSpace: 'nowrap' }}>
+                            登録日：{dayjs(task.createdAt).format('YYYY年MM月DD日')}
+                          </Typography>
+                          <Typography style={{ width: '25%', whiteSpace: 'nowrap' }}>
+                            更新日：{dayjs(task.updatedAt).format('YYYY年MM月DD日')}
+                          </Typography>
+                          <Typography style={{ width: '21%', whiteSpace: 'nowrap' }}>登録者：{task.account}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography>{task.description}</Typography>
+                        </AccordionDetails>
+                        <Divider />
+                        <Button
+                          variant="contained"
+                          endIcon={<MarkChatReadIcon />}
+                          onClick={() => handleReadFlg(task)}
+                          style={{
+                            display: 'flex',
+                            margin: '0 auto',
+                            marginTop: 20,
+                            marginBottom: 20,
+                            background: '#3ea8ff',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {task.readFlg ? '既読' : '未読'}
                         </Button>
-                        <Button onClick={() => setConfirmDeletion(task)}>
-                          <DeleteIcon />
-                        </Button>
-                      </>
-                    )}
-                  </div>
+                      </Accordion>
+                      {task.account === users.account && (
+                        <>
+                          <Button>
+                            <EditIcon onClick={() => handleEdit(task)} />
+                          </Button>
+                          <Button onClick={() => setConfirmDeletion(task)}>
+                            <DeleteIcon />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </Paper>
                 )}
-              </>
+              </div>
             )
           })}
-        </Paper>
+        </div>
       ) : tasks.length !== 0 && selectProject === null ? (
         <Paper sx={{ padding: 5, marginTop: 3.9 }}>
           <ListItem>
